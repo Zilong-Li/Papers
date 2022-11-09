@@ -1,0 +1,264 @@
+
+scenario: ""
+
+time: "/usr/bin/time"
+pcaone: "$HOME/local/bin/PCAone"
+terapca: "$HOME/local/bin/TeraPCA"
+propca: "$HOME/local/bin/propca"
+flashpca: "$HOME/local/bin/flashpca"
+plink1: "$HOME/local/bin/plink"
+plink2: "$HOME/local/bin/plink2"
+smartpca: "$HOME/local/bin/smartpca"
+csv2bin: "$HOME/.julia/packages/OnlinePCA/isnHZ/bin/csv2bin"
+sumr: "$HOME/.julia/packages/OnlinePCA/isnHZ/bin/sumr"
+jlhalko: "$HOME/.julia/packages/OnlinePCA/isnHZ/bin/halko"
+julia: "$HOME/.local/bin/julia"
+
+figure1:
+  dataset: ["asian"]
+  pcs: [2, 5, 10, 20, 30, 40]
+  threads: 10
+  # pcaone options
+  windows: [64]
+  pcaonea: "--arnoldi --memory 2"
+  pcaonef: "--tol 1e-4 --maxp 40 --memory 2 --printu"
+  pcaoneh: "--tol 1e-4 --maxp 40 --memory 2 --halko --printu"
+  # other program options
+  terapca: "-filewrite 1 -print 2 -memory 2"
+  propca: "-vn -cl 0.001 -a"
+  flashpca: "--verbose --memory 2048"
+
+figure2:
+  dataset: "NA"
+  pcs: [20, 40]
+  threads: 20
+  # pcaone options
+  windows: [64]
+  pcaonea: "--arnoldi --memory 4"
+  pcaonef: "--tol 1e-4 --maxp 40 --memory 4"
+  pcaoneh: "--tol 1e-4 --maxp 40 --memory 4 --halko"
+  # terapca options
+  terapca: "-filewrite 1 -print 2 -memory 4"
+  propca: "-vn -cl 0.001 -a"
+  flashpca: "--verbose --memory 4100"
+
+figure2A:
+  dataset: ["datas1", "datas2", "datas3", "datas4", "datas5", "datas6"]
+  pcs: [20, 40]
+  threads: 20
+  # pcaone options
+  windows: [64]
+  pcaonea: "--arnoldi --memory 4"
+  pcaonef: "--tol 1e-4 --maxp 40 --memory 4"
+  pcaoneh: "--tol 1e-4 --maxp 40 --memory 4 --halko"
+  # terapca options
+  terapca: "-filewrite 1 -print 2 -memory 4"
+  propca: "-vn -cl 0.001 -a"
+  flashpca: "--verbose --memory 4100"
+
+figure2B:
+  dataset: ["datas7", "datas8", "datas9", "datas10", "datas11", "datas12", "datas13"]
+  pcs: [20, 40]
+  threads: 20
+  # pcaone options
+  windows: [64]
+  pcaonea: "--arnoldi --memory 4"
+  pcaonef: "--tol 1e-4 --maxp 40 --memory 4"
+  pcaoneh: "--tol 1e-4 --maxp 40 --memory 4 --halko"
+  # terapca options
+  terapca: "-filewrite 1 -print 2 -memory 4"
+  propca: "-vn -cl 0.001 -a"
+  flashpca: "--verbose --memory 4100"
+
+figure3:
+  dataset: ["ukb"]
+  pcs: [40]
+  threads: 20
+  # pcaone options
+  windows: [64]
+  pcaonea: "--arnoldi --memory 20"
+  pcaonef: "--tol 1e-4 --maxp 20 --memory 20 --printu"
+  pcaoneh: "--tol 1e-9 --maxp 17 --memory 20 --halko --printu"
+  # other program options
+  # terapca: "-filewrite 1 -print 2 -rfetched 2000"
+  terapca: "-filewrite 1 -print 2 -rfetched 4000"
+  propca: "-vn -cl 0.001 -a"
+  flashpca: "--verbose --memory 20000"
+
+figure4:
+  dataset: ["brain_v1"]
+  pcs: [40]
+  threads: 20
+  # pcaone options
+  windows: [64]
+  pcaonea: "--arnoldi --memory 20"
+  pcaonef: "--memory 20"
+  pcaoneh: "--halko --memory 20"
+  # other program options
+  # terapca: "-filewrite 1 -print 2 -rfetched 2000"
+  terapca: "-filewrite 1 -print 2 -rfetched 4000"
+  propca: "-vn -cl 0.001 -a"
+  flashpca: "--verbose --memory 20000"
+
+test_1kg:
+  dataset: ["asian", "1000G"]
+  pcs: [10, 20, 30, 40]
+  threads: 4
+  # pcaone options
+  windows: [8, 16, 32, 64, 128, 256]
+  pcaonea: "--arnoldi --memory 1"
+  pcaonef: "--tol 1e-4 --maxp 40 --memory 1"
+  pcaoneh: "--tol 1e-4 --maxp 40 --memory 1 --halko"
+  # other program options
+  terapca: "-filewrite 1 -print 2 -memory 2"
+  propca: "-vn -cl 0.001 -a"
+  flashpca: "--verbose --memory 40000"
+
+test_scrnas:
+  dataset: ["brain", "brain_v1", "pbmc", "pbmc_v1", "pancreas", "pancreas_v1"]
+  pcs: [20, 40]
+  threads: 20
+  # pcaone options
+  windows: [64]
+  # windows: [4, 8, 16, 32, 64]
+  pcaonea: "--arnoldi --memory 4"
+  pcaonef: "--tol 1e-4 --maxp 40 --memory 4"
+  pcaoneh: "--tol 1e-4 --maxp 40 --memory 4 --halko"
+  # other program options
+  terapca: "-filewrite 1 -print 2 -memory 2"
+  propca: "-vn -cl 0.001 -a"
+  flashpca: "--verbose --batch"
+
+test_ukb:
+  dataset: ["ukb"]
+  pcs: [40]
+  threads: 20
+  # pcaone options
+  windows: [64]
+  pcaonea: "--arnoldi --memory 20"
+  pcaonef: "--tol 1e-4 --maxp 20 --memory 20 --printu"
+  pcaoneh: "--tol 1e-9 --maxp 20 --memory 20 --halko --printu"
+  # other program options
+  # terapca: "-filewrite 1 -print 2 -rfetched 2000"
+  terapca: "-filewrite 1 -print 2 -memory 2"
+  propca: "-vn -cl 0.001 -a"
+  flashpca: "--verbose --memory 20000"
+
+test_ukb_kelly:
+  dataset: ["ukb_kelly"]
+  pcs: [40]
+  threads: 20
+  # pcaone options
+  windows: [64]
+  pcaonea: "--arnoldi --memory 20"
+  pcaonef: "--tol 1e-4 --maxp 20 --memory 20"
+  pcaoneh: "--tol 1e-9 --maxp 16 --memory 20 --halko"
+  # other program options
+  terapca: "-filewrite 1 -print 2 -memory 20"
+  propca: "-vn -cl 0.001 -a"
+  flashpca: "--verbose --memory 20000"
+
+1000G:
+  bed: data/1000G/all.2504.bed
+  bim: data/1000G/all.2504.bim
+  fam: data/1000G/all.2504.fam
+
+asian:
+  bed: data/asia/THG.sim.bed
+  bim: data/asia/THG.sim.bim
+  fam: data/asia/THG.sim.fam
+
+ukb:
+  bed: data/ukb/merge.maf0.05.bed
+  bim: data/ukb/merge.maf0.05.bim
+  fam: data/ukb/merge.maf0.05.fam
+
+ukb_kelly:
+  bed: /emc/zilong/ukb/imputed/merge.maf0.05.bed
+  bim: /emc/zilong/ukb/imputed/merge.maf0.05.bim
+  fam: /emc/zilong/ukb/imputed/merge.maf0.05.fam
+
+datas1:
+  bed: data/bySamples/ukb.samples.10000.bed
+  bim: data/bySamples/ukb.samples.10000.bim
+  fam: data/bySamples/ukb.samples.10000.fam
+
+datas2:
+  bed: data/bySamples/ukb.samples.20000.bed
+  bim: data/bySamples/ukb.samples.20000.bim
+  fam: data/bySamples/ukb.samples.20000.fam
+
+datas3:
+  bed: data/bySamples/ukb.samples.40000.bed
+  bim: data/bySamples/ukb.samples.40000.bim
+  fam: data/bySamples/ukb.samples.40000.fam
+
+datas4:
+  bed: data/bySamples/ukb.samples.60000.bed
+  bim: data/bySamples/ukb.samples.60000.bim
+  fam: data/bySamples/ukb.samples.60000.fam
+
+datas5:
+  bed: data/bySamples/ukb.samples.80000.bed
+  bim: data/bySamples/ukb.samples.80000.bim
+  fam: data/bySamples/ukb.samples.80000.fam
+
+datas6:
+  bed: data/bySamples/ukb.samples.100000.bed
+  bim: data/bySamples/ukb.samples.100000.bim
+  fam: data/bySamples/ukb.samples.100000.fam
+
+datas7:
+  bed: data/bySnps/ukb.nsnps.200000.bed
+  bim: data/bySnps/ukb.nsnps.200000.bim
+  fam: data/bySnps/ukb.nsnps.200000.fam
+
+datas8:
+  bed: data/bySnps/ukb.nsnps.400000.bed
+  bim: data/bySnps/ukb.nsnps.400000.bim
+  fam: data/bySnps/ukb.nsnps.400000.fam
+
+datas9:
+  bed: data/bySnps/ukb.nsnps.600000.bed
+  bim: data/bySnps/ukb.nsnps.600000.bim
+  fam: data/bySnps/ukb.nsnps.600000.fam
+
+datas10:
+  bed: data/bySnps/ukb.nsnps.800000.bed
+  bim: data/bySnps/ukb.nsnps.800000.bim
+  fam: data/bySnps/ukb.nsnps.800000.fam
+
+datas11:
+  bed: data/bySnps/ukb.nsnps.1000000.bed
+  bim: data/bySnps/ukb.nsnps.1000000.bim
+  fam: data/bySnps/ukb.nsnps.1000000.fam
+
+datas12:
+  bed: data/bySnps/ukb.nsnps.2000000.bed
+  bim: data/bySnps/ukb.nsnps.2000000.bim
+  fam: data/bySnps/ukb.nsnps.2000000.fam
+
+datas13:
+  bed: data/bySnps/ukb.nsnps.3000000.bed
+  bim: data/bySnps/ukb.nsnps.3000000.bim
+  fam: data/bySnps/ukb.nsnps.3000000.fam
+
+brain:
+  csv: data/brain/Data.c0.zst
+  bin: data/brain/Data.zst
+
+brain_v1:
+  csv: data/brain/Data.c1.zst
+  bin: data/brain/Data.zst
+
+pbmc:
+  csv: data/pbmcs/Data.c0.zst
+
+pbmc_v1:
+  csv: data/pbmcs/Data.c1.zst
+
+pancreas:
+  csv: data/pancreas/Data.c0.zst
+
+pancreas_v1:
+  csv: data/pancreas/Data.c1.zst

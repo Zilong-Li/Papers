@@ -1,0 +1,19 @@
+
+from snakemake.utils import min_version
+
+##### set minimum snakemake version #####
+min_version("6.4.1")
+
+
+configfile: "config/config.yaml"
+
+include: "rules/common.smk"
+include: "rules/figure1.smk"
+include: "rules/figure2.smk"
+include: "rules/figure3.smk"
+include: "rules/figure4.smk"
+include: "rules/test.smk"
+
+rule all:
+    input:
+        get_all_results(),

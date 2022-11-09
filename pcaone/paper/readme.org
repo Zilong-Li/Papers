@@ -1,0 +1,18 @@
+#+title: Readme
+
+This is a reproducible snakemake workflow for [[https://doi.org/10.1101/2022.05.25.493261][PCAone manuscript]].
+
+* Configure the workflow
+
+Everything is configurable by only editing the =config/config.yaml= without touching any thing in the =workflow= folder. Each scenario should have their own program options configured.
+
+* Run the workflow
+
+The major scenarios used in the paper are =figure1=, =figure2=, =figure3= and =figure4=. The additional scenario used to test PCAone performance given different =windows= for multiple different dataset is named with =test_= prefix, eg =test_1kg=, =test_ukb= and =test_scrnas=. Running the pipeline by
+
+- either use =--config key=value= option of snakemake to overwrite the default =scenario= and =program path= in config.yaml file
+- or change =scenario= value in config.yaml file
+
+#+begin_src shell
+snakemake -j60 --config scenario=figure1 pcaone=/where/you/put/pcaone -n
+#+end_src
