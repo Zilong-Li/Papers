@@ -148,7 +148,7 @@ figD <- function() {
 }
 
 figC <- function() {
-  plotacc(t(m.ram), xlabels = KK, mapprog = PROGS, ylim = range(m.ram), xlab = "Number of estimated PCs (K)", ylab = "Memory in Gigabytes")
+  plotacc(t(m.ram), xlabels = KK, mapprog = PROGS, ylim = range(m.ram, na.rm = T), xlab = "Number of estimated PCs (K)", ylab = "Memory in Gigabytes")
   legend("topleft", legend =  fancyname(progs), col = as.character(PROGS["col", progs]), pch = 21, lwd = 1.3, cex = 1.2, bty = "n", inset = c(0, -0.05))
 }
 

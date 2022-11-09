@@ -17,7 +17,7 @@ julia: "$HOME/.local/bin/julia"
 figure1:
   dataset: ["asian"]
   pcs: [2, 5, 10, 20, 30, 40]
-  threads: 10
+  threads: 4
   # pcaone options
   windows: [64]
   pcaonea: "--arnoldi --memory 2"
@@ -26,7 +26,7 @@ figure1:
   # other program options
   terapca: "-filewrite 1 -print 2 -memory 2"
   propca: "-vn -cl 0.001 -a"
-  flashpca: "--verbose --memory 2048"
+  flashpca: "--verbose --memory 4100"
 
 figure2:
   dataset: "NA"
@@ -95,7 +95,6 @@ figure4:
   pcaonef: "--memory 20"
   pcaoneh: "--halko --memory 20"
   # other program options
-  # terapca: "-filewrite 1 -print 2 -rfetched 2000"
   terapca: "-filewrite 1 -print 2 -rfetched 4000"
   propca: "-vn -cl 0.001 -a"
   flashpca: "--verbose --memory 20000"

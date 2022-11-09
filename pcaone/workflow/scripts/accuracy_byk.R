@@ -7,37 +7,6 @@ library(gridExtra)
 library(gtable)
 library(cowplot)
 
-readfastpca <- function(fn) {
-  a <- fread(cmd = paste("tail +2", fn))
-  a <- as.matrix(a[, 1:(ncol(a) - 1)][, -1])
-  a
-}
-
-readflashpca <- function(fn) {
-  if (file.size(fn) == 0L) {
-    return(NULL)
-  } else {
-    a <- fread(fn, header = T)
-    return(as.matrix(a[, -c(1, 2)]))
-  }
-}
-
-readplink1 <- function(fn) {
-  if (file.size(fn) == 0L) {
-    return(NULL)
-  } else {
-    return(as.matrix(fread(fn)[, -c(1, 2)]))
-  }
-}
-
-readplink2 <- function(fn) {
-  if (file.size(fn) == 0L) {
-    return(NULL)
-  } else {
-    a <- fread(fn, header = T)
-    return(as.matrix(a[, -c(1, 2)]))
-  }
-}
 
 inputs <- names(snakemake@input)
 truth <- NULL

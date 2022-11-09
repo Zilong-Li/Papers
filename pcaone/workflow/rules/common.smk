@@ -382,7 +382,7 @@ rule run_fastpca:
         numthreads: {threads}
         numoutevec: {wildcards.k}" > {output.par}
         {TIME} -v {SMARTPCA} -p {output.par} &> {log} || true
-        if [ -f {output.vec} ]; then touch {output}; fi
+        if [ ! -f {output.vec} ]; then touch {output}; fi
         head -1 {output.vec}| perl -lane 'print join("\\n", @F[1..$#F])' >{output.val}
         """
 
@@ -422,7 +422,7 @@ rule run_plink1:
     shell:
         """
         {TIME} -v {PLINK1} --bfile {params.bfile} --pca {wildcards.k} --out {params.out} --threads {threads} &> {log}  || true
-        if [ -f {output.vec} ]; then touch {output}; fi
+        if [ ! -f {output.vec} ]; then touch {output}; fi
         """
 
 
@@ -441,7 +441,7 @@ rule run_plink2:
     shell:
         """
         {TIME} -v {PLINK2} --bfile {params.bfile} --pca approx {wildcards.k} --out {params.out} --threads {threads} &> {log} || true
-        if [ -f {output.vec} ]; then touch {output}; fi
+        if [ ! -f {output.vec} ]; then touch {output}; fi
         """
 
 
