@@ -239,9 +239,9 @@ fancyname <- function(c, bold = FALSE) {
     "pcaone.f" = expression(paste(bold("PCAone"))),
     "pcaone.a" = expression(paste(bold("PCAone"[Arnoldi]))),
     "terapca" = expression(paste(bold("TeraPCA"))),
-    "propca" = expression(paste(bold("ProPCA"))),
+    "propca" = expression(paste(bold("ProPCA*"))),
     "flashpca" = expression(paste(bold("FlashPCA2"))),
-    "plink2" = expression(paste(bold("Plink2(FastPCA)")))
+    "plink2" = expression(paste(bold("Plink2(FastPCA)*")))
   )
   np <- list(
     "pcaone.h" = expression(paste("PCAone"[H + Y])),
