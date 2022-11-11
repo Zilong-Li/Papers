@@ -134,20 +134,20 @@ gettimes <- function(ss) {
 
 # check file empty and Exit status: 0
 checklog <- function(lines) {
-    if (identical(lines, character(0))) {
-      return(NULL)
-    }
-    if (length(grep("Exit status: 0", lines)) == 0) {
-      return(NULL)
-    }
-    lines
+  if (identical(lines, character(0))) {
+    return(NULL)
+  }
+  if (length(grep("Exit status: 0", lines)) == 0) {
+    return(NULL)
+  }
+  lines
 }
 
 logram <- function(l) {
   sapply(l, function(lines) {
     lines <- checklog(lines)
-    if(is.null(lines)) {
-        return(NA)
+    if (is.null(lines)) {
+      return(NA)
     }
     a <- strsplit(lines[grep("Maximum", lines)], " ")[[1]]
     as.numeric(a[length(a)]) # in kbytes
@@ -157,8 +157,8 @@ logram <- function(l) {
 logtimes <- function(l) {
   sapply(l, function(lines) {
     lines <- checklog(lines)
-    if(is.null(lines)) {
-        return(NA)
+    if (is.null(lines)) {
+      return(NA)
     }
     a <- strsplit(lines[grep("Elapsed", lines)], " ")[[1]]
     gettimes(a[length(a)]) # in seconds
@@ -168,8 +168,8 @@ logtimes <- function(l) {
 logepochs <- function(l) {
   sapply(l, function(lines) {
     lines <- checklog(lines)
-    if(is.null(lines)) {
-        return(NA)
+    if (is.null(lines)) {
+      return(NA)
     }
     a <- strsplit(lines[grep("stops", lines)], " ")[[1]]
     as.numeric(gsub("epoch=", "", a[length(a)]))
@@ -293,3 +293,23 @@ readplink2 <- function(fn) {
     return(as.matrix(a[, -c(1, 2)]))
   }
 }
+
+## make eigenvalues barplot
+
+ploteigvals <- function(ff, name = NULL) {
+  # input eigvals files
+  n <- length(ff)
+  eigvals <- lapply(ff, function(f) {
+    v <- read.table(f)[, 1]
+    v
+  })
+  if (is.null(name)) {
+    name <- names(eigvals)
+  }
+  nc <- ceiling(n / 2)
+  par(mfrow = c(2, nc))
+  for (i in seq_len(length(eigvals))) {
+    barplot(eigvals[[i]], names.arg = seq_len(length(eigvals[[i]])), main = name[i], xlab = "PCs", ylab = "Eigenvalues", cex.lab = 1.5)
+  }
+}
+

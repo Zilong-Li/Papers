@@ -15,7 +15,7 @@ jlhalko: "$HOME/.julia/packages/OnlinePCA/isnHZ/bin/halko"
 julia: "$HOME/.local/bin/julia"
 
 figure1:
-  dataset: ["asian"]
+  dataset: ["asian", "1000G"]
   pcs: [2, 5, 10, 20, 30, 40]
   threads: 4
   # pcaone options

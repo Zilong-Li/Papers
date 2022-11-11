@@ -64,7 +64,8 @@ names(log) <- KK
 
 
 # now show epochs vs mev for pcaone.f and pcaone.h for K=10
-K <- "10"
+## K <- "10"
+K <- "40"
 iK <- which(KK == K)
 file.plink1 <- snakemake@input[["vecplink1"]][[iK]]
 file.pcaone.h <- snakemake@input[["vecpcaoneh"]][[iK]]
@@ -139,12 +140,12 @@ plotacc2 <- function(h, f, ...) {
 }
 
 figE <- function() {
-  plotacc2(C$pcaone.h, C$pcaone.f, ylim = c(0.2, 1.0), xlab = "Epochs", ylab = "Accuracy of top K=10 PCs")
+  plotacc2(C$pcaone.h, C$pcaone.f, ylim = c(0.2, 1.0), xlab = "Epochs", ylab = paste0("Accuracy of top K=",K," PCs"))
   legend("bottomright", legend = fancyname(c("pcaone.f", "pcaone.h")), col = as.character(PROGS["col", c("pcaone.f", "pcaone.h")]), pch = 21, lwd = 1.3, cex = 1.3, bty = "n")
 }
 
 figD <- function() {
-    plotacc(t(m.mev), xlabels = KK, mapprog = PROGS, ylim = c(0.6, 1.0), xlab = "Number of estimated PCs (K)", ylab = "Accuracy of estimated PCs")
+    plotacc(t(m.mev), xlabels = KK, mapprog = PROGS, ylim = range(m.mev, na.rm = T), xlab = "Number of estimated PCs (K)", ylab = "Accuracy of estimated PCs")
 }
 
 figC <- function() {
