@@ -2,13 +2,13 @@
 scenario: ""
 
 time: "/usr/bin/time"
-pcaone: "$HOME/local/bin/PCAone"
-terapca: "$HOME/local/bin/TeraPCA"
-propca: "$HOME/local/bin/propca"
-flashpca: "$HOME/local/bin/flashpca"
-plink1: "$HOME/local/bin/plink"
-plink2: "$HOME/local/bin/plink2"
-smartpca: "$HOME/local/bin/smartpca"
+pcaone: "PCAone"
+terapca: "TeraPCA"
+propca: "propca"
+flashpca: "flashpca"
+plink1: "plink"
+plink2: "plink2"
+smartpca: "smartpca"
 csv2bin: "$HOME/.julia/packages/OnlinePCA/isnHZ/bin/csv2bin"
 sumr: "$HOME/.julia/packages/OnlinePCA/isnHZ/bin/sumr"
 jlhalko: "$HOME/.julia/packages/OnlinePCA/isnHZ/bin/halko"
@@ -114,12 +114,12 @@ test_1kg:
   flashpca: "--verbose --memory 40000"
 
 test_scrnas:
-  dataset: ["brain", "brain_v1", "pbmc", "pbmc_v1", "pancreas", "pancreas_v1"]
+  dataset: ["brain_v1"]
+  # dataset: ["brain", "brain_v1", "brainsp","brainsp_v1","pbmc", "pbmc_v1", "pancreas", "pancreas_v1"]
   pcs: [20, 40]
   threads: 20
   # pcaone options
-  windows: [64]
-  # windows: [4, 8, 16, 32, 64]
+  windows: [4, 8, 16, 32, 64]
   pcaonea: "--arnoldi --memory 4"
   pcaonef: "--tol 1e-4 --maxp 40 --memory 4"
   pcaoneh: "--tol 1e-4 --maxp 40 --memory 4 --halko"
@@ -133,7 +133,7 @@ test_ukb:
   pcs: [40]
   threads: 20
   # pcaone options
-  windows: [64]
+  windows: [16, 32, 64, 128]
   pcaonea: "--arnoldi --memory 20"
   pcaonef: "--tol 1e-4 --maxp 20 --memory 20 --printu"
   pcaoneh: "--tol 1e-9 --maxp 20 --memory 20 --halko --printu"
@@ -249,6 +249,14 @@ brain:
 brain_v1:
   csv: data/brain/Data.c1.zst
   bin: data/brain/Data.zst
+
+brainsp:
+  csv: data/brain_spinacord/Data.c0.zst
+  bin: data/brain_spinacord/Data.zst
+
+brainsp_v1:
+  csv: data/brain_spinacord/Data.c0.zst
+  bin: data/brain_spinacord/Data.zst
 
 pbmc:
   csv: data/pbmcs/Data.c0.zst
