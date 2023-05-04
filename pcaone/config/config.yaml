@@ -1,7 +1,7 @@
 
 scenario: ""
 
-time: "/usr/bin/time"
+time: "$HOME/.local/bin/time"
 pcaone: "PCAone"
 terapca: "TeraPCA"
 propca: "propca"
@@ -20,9 +20,9 @@ figure1:
   threads: 4
   # pcaone options
   windows: [64]
-  pcaonea: "--arnoldi --memory 2"
-  pcaonef: "--tol 1e-4 --maxp 40 --memory 2 --printu"
-  pcaoneh: "--tol 1e-4 --maxp 40 --memory 2 --halko --printu"
+  pcaonea: "--svd 2 --memory 2"
+  pcaonef: "--svd 0 --memory 2 --tol 1e-4 --maxp 40 --printu"
+  pcaoneh: "--svd 1 --memory 2 --tol 1e-4 --maxp 40 --printu"
   # other program options
   terapca: "-filewrite 1 -print 2 -memory 2"
   propca: "-vn -cl 0.001 -a"
@@ -34,9 +34,9 @@ figure2:
   threads: 20
   # pcaone options
   windows: [64]
-  pcaonea: "--arnoldi --memory 4"
-  pcaonef: "--tol 1e-4 --maxp 40 --memory 4"
-  pcaoneh: "--tol 1e-4 --maxp 40 --memory 4 --halko"
+  pcaonea: "--svd 2 --memory 4"
+  pcaonef: "--svd 0 --memory 2 --tol 1e-4 --maxp 40"
+  pcaoneh: "--svd 1 --memory 2 --tol 1e-4 --maxp 40"
   # terapca options
   terapca: "-filewrite 1 -print 2 -memory 4"
   propca: "-vn -cl 0.001 -a"
@@ -48,9 +48,9 @@ figure2A:
   threads: 20
   # pcaone options
   windows: [64]
-  pcaonea: "--arnoldi --memory 4"
-  pcaonef: "--tol 1e-4 --maxp 40 --memory 4"
-  pcaoneh: "--tol 1e-4 --maxp 40 --memory 4 --halko"
+  pcaonea: "--svd 2 --memory 4"
+  pcaonef: "--svd 0 --memory 2 --tol 1e-4 --maxp 40"
+  pcaoneh: "--svd 1 --memory 2 --tol 1e-4 --maxp 40"
   # terapca options
   terapca: "-filewrite 1 -print 2 -memory 4"
   propca: "-vn -cl 0.001 -a"
@@ -61,10 +61,10 @@ figure2B:
   pcs: [20, 40]
   threads: 20
   # pcaone options
+  pcaonea: "--svd 2 --memory 4"
+  pcaonef: "--svd 0 --memory 2 --tol 1e-4 --maxp 40"
+  pcaoneh: "--svd 1 --memory 2 --tol 1e-4 --maxp 40"
   windows: [64]
-  pcaonea: "--arnoldi --memory 4"
-  pcaonef: "--tol 1e-4 --maxp 40 --memory 4"
-  pcaoneh: "--tol 1e-4 --maxp 40 --memory 4 --halko"
   # terapca options
   terapca: "-filewrite 1 -print 2 -memory 4"
   propca: "-vn -cl 0.001 -a"
@@ -76,9 +76,9 @@ figure3:
   threads: 20
   # pcaone options
   windows: [64]
-  pcaonea: "--arnoldi --memory 20"
-  pcaonef: "--tol 1e-4 --maxp 20 --memory 20 --printu"
-  pcaoneh: "--tol 1e-9 --maxp 17 --memory 20 --halko --printu"
+  pcaonea: "--svd 2 --memory 20"
+  pcaonef: "--svd 0 --tol 1e-4 --maxp 20 --memory 20 --printu"
+  pcaoneh: "--svd 1 --tol 1e-9 --maxp 17 --memory 20 --printu"
   # other program options
   # terapca: "-filewrite 1 -print 2 -rfetched 2000"
   terapca: "-filewrite 1 -print 2 -rfetched 4000"
@@ -91,9 +91,9 @@ figure4:
   threads: 20
   # pcaone options
   windows: [64]
-  pcaonea: "--arnoldi --memory 20"
-  pcaonef: "--memory 20"
-  pcaoneh: "--halko --memory 20"
+  pcaonea: "--svd 2 --memory 2"
+  pcaonef: "--svd 0 --memory 2"
+  pcaoneh: "--svd 1 --memory 2"
   # other program options
   terapca: "-filewrite 1 -print 2 -rfetched 4000"
   propca: "-vn -cl 0.001 -a"
@@ -143,39 +143,31 @@ test_ukb:
   propca: "-vn -cl 0.001 -a"
   flashpca: "--verbose --memory 20000"
 
-test_ukb_kelly:
-  dataset: ["ukb_kelly"]
-  pcs: [40]
-  threads: 20
-  # pcaone options
-  windows: [64]
-  pcaonea: "--arnoldi --memory 20"
-  pcaonef: "--tol 1e-4 --maxp 20 --memory 20"
-  pcaoneh: "--tol 1e-9 --maxp 16 --memory 20 --halko"
-  # other program options
-  terapca: "-filewrite 1 -print 2 -memory 20"
-  propca: "-vn -cl 0.001 -a"
-  flashpca: "--verbose --memory 20000"
+asian:
+  bed: data/asia/THG.sim.bed
+  bim: data/asia/THG.sim.bim
+  fam: data/asia/THG.sim.fam
 
 1000G:
   bed: data/1000G/all.2504.bed
   bim: data/1000G/all.2504.bim
   fam: data/1000G/all.2504.fam
 
-asian:
-  bed: data/asia/THG.sim.bed
-  bim: data/asia/THG.sim.bim
-  fam: data/asia/THG.sim.fam
+HGDP:
+  bed: data/HGDP/all.gnomad.genomes.v3.1.2.hgdp_tgp.snp.maf0.01.bed
+  bim: data/HGDP/all.gnomad.genomes.v3.1.2.hgdp_tgp.snp.maf0.01.bim
+  fam: data/HGDP/all.gnomad.genomes.v3.1.2.hgdp_tgp.snp.maf0.01.fam
 
 ukb:
   bed: data/ukb/merge.maf0.05.bed
   bim: data/ukb/merge.maf0.05.bim
   fam: data/ukb/merge.maf0.05.fam
 
-ukb_kelly:
-  bed: /emc/zilong/ukb/imputed/merge.maf0.05.bed
-  bim: /emc/zilong/ukb/imputed/merge.maf0.05.bim
-  fam: /emc/zilong/ukb/imputed/merge.maf0.05.fam
+ukb_array:
+  bed: data/ukb_array/ukb_snp_chip.bgen.vars.bed
+  bim: data/ukb_array/ukb_snp_chip.bgen.vars.bim
+  fam: data/ukb_array/ukb_snp_chip.bgen.vars.fam
+  bgen: data/ukb_array/perm.chip.concat.ld.qc.bgen
 
 datas1:
   bed: data/bySamples/ukb.samples.10000.bed

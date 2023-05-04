@@ -1,4 +1,8 @@
 
+library(data.table)
+library(ggplot2)
+library(dplyr)
+library(cowplot)
 
 norm_vec <- function(x) {
   sqrt(sum(x^2))
@@ -313,3 +317,55 @@ ploteigvals <- function(ff, name = NULL) {
   }
 }
 
+
+make_ukb_pca <- function(pc, fam, label){
+  d1 = fread(pc, select = 1:4, h=F, data.table=F)
+  d2 = fread(fam, h=F, select = 1:2, col.names = c("fid", "iid"), data.table=F)
+  d3 = fread(label, col.names = c("iid","ethnic"), h=F, data.table=F)
+  d2 <- d2 %>% left_join(d3, by="iid")
+  d  <- cbind(d2$ethnic, d1)
+  colnames(d)  <- c("ethnic", paste0("PC", 1:(dim(d)[2] - 1)))
+  dd <- d %>% mutate(ethnic = case_when(ethnic == 1 ~ 'Other Asian backgroud',
+                                        ethnic == 1001 ~ 'British',
+                                        ethnic == 2001 ~ 'White and Black Caribbean',
+                                        ethnic == 3001 ~ 'Indian',
+                                        ethnic == 4001 ~ 'Caribbean',
+                                        ethnic == 2 ~ 'Other mixed background',
+                                        ethnic == 1002 ~ 'Irish',
+                                        ethnic == 2002 ~ 'White and Black Afrian',
+                                        ethnic == 3002 ~ 'Pakistani',
+                                        ethnic == 4002 ~ 'Afrian',
+                                        ethnic == 3 ~ 'Other Asian backgroud',
+                                        ethnic == 1003 ~ 'Other White backgroud',
+                                        ethnic == 2003 ~ 'White and Asian',
+                                        ethnic == 3003 ~ 'Bangladeshi',
+                                        ethnic == 4003 ~ 'Other Black backgroud',
+                                        ethnic == 4 ~ 'Other Black backgroud',
+                                        ethnic == 2004 ~ 'Other mixed background',
+                                        ethnic == 3004 ~ 'Other Asian backgroud',
+                                        ethnic == 5 ~ 'Chinese',
+                                        ethnic == 6 ~ 'Other ethnic',
+                                        TRUE ~ as.character(NA)))
+  dd <- d %>% mutate(ethnic = case_when(ethnic == 1 ~ 'Other',
+                                        ethnic == 1001 ~ 'British',
+                                        ethnic == 2001 ~ 'Other',
+                                        ethnic == 3001 ~ 'Indian',
+                                        ethnic == 4001 ~ 'Caribbean',
+                                        ethnic == 2 ~ 'Other',
+                                        ethnic == 1002 ~ 'Irish',
+                                        ethnic == 2002 ~ 'Other',
+                                        ethnic == 3002 ~ 'Pakistani',
+                                        ethnic == 4002 ~ 'Afrian',
+                                        ethnic == 3 ~ 'Other',
+                                        ethnic == 1003 ~ 'Other',
+                                        ethnic == 2003 ~ 'Other',
+                                        ethnic == 3003 ~ 'Bangladeshi',
+                                        ethnic == 4003 ~ 'Other',
+                                        ethnic == 4 ~ 'Other',
+                                        ethnic == 2004 ~ 'Other',
+                                        ethnic == 3004 ~ 'Other',
+                                        ethnic == 5 ~ 'Chinese',
+                                        ethnic == 6 ~ 'Other',
+                                        TRUE ~ "Other"))
+  dd
+}

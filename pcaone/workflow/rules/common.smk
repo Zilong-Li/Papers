@@ -12,7 +12,6 @@ valid_scenarios = [
     "figure2B",
     "test_1kg",
     "test_ukb",
-    "test_ukb_kelly",
     "test_scrnas",
 ]
 
@@ -442,6 +441,60 @@ rule run_plink2:
         """
         {TIME} -v {PLINK2} --bfile {params.bfile} --pca approx {wildcards.k} --out {params.out} --threads {threads} &> {log} || true
         if [ ! -f {output.vec} ]; then touch {output}; fi
+        """
+
+rule run_bgen_pcaone_arnoldi:
+    output:
+        vec=os.path.join(OUTDIR, "{data}", "pcaone.a.k{k}.eigvecs"),
+    log:
+        os.path.join(OUTDIR, "{data}", "pcaone.a.k{k}.llog"),
+    params:
+        bgen=lambda wildcards: config[wildcards.data]["bgen"],
+        out=lambda wildcards, output: output[0][:-8],
+        pcaonea=config[scenario]["pcaonea"],
+    threads: THREADS
+    shell:
+        """
+        export MKL_NUM_THREADS={threads}
+        export NUMEXPR_NUM_THREADS={threads}
+        export OMP_NUM_THREADS={threads}
+        {TIME} -v {PCAONE} --bgen {params.bgen} -k {wildcards.k} -n {threads} -o {params.out} --verbose {params.pcaonea} &> {log}
+        """
+
+rule run_bgen_pcaone_alg1:
+    output:
+        vec=os.path.join(OUTDIR, "{data}", "pcaone.h.k{k}.eigvecs"),
+    log:
+        os.path.join(OUTDIR, "{data}", "pcaone.h.k{k}.llog"),
+    params:
+        bgen=lambda wildcards: config[wildcards.data]["bgen"],
+        out=lambda wildcards, output: output[0][:-8],
+        pcaoneh=config[scenario]["pcaoneh"],
+    threads: THREADS
+    shell:
+        """
+        export MKL_NUM_THREADS={threads}
+        export NUMEXPR_NUM_THREADS={threads}
+        export OMP_NUM_THREADS={threads}
+        {TIME} -v {PCAONE} --bgen {params.bgen} -k {wildcards.k} -n {threads} -o {params.out} --verbose {params.pcaonea} &> {log}
+        """
+
+rule run_bgen_pcaone_alg2:
+    output:
+        vec=os.path.join(OUTDIR, "{data}", "pcaone.f.k{k}.eigvecs"),
+    log:
+        os.path.join(OUTDIR, "{data}", "pcaone.f.k{k}.llog"),
+    params:
+        bgen=lambda wildcards: config[wildcards.data]["bgen"],
+        out=lambda wildcards, output: output[0][:-8],
+        pcaonef=config[scenario]["pcaonef"],
+    threads: THREADS
+    shell:
+        """
+        export MKL_NUM_THREADS={threads}
+        export NUMEXPR_NUM_THREADS={threads}
+        export OMP_NUM_THREADS={threads}
+        {TIME} -v {PCAONE} --bgen {params.bgen} -k {wildcards.k} -n {threads} -o {params.out} --verbose {params.pcaonea} &> {log}
         """
 
 
