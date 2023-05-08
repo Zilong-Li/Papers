@@ -99,15 +99,30 @@ figure4:
   propca: "-vn -cl 0.001 -a"
   flashpca: "--verbose --memory 20000"
 
-test_1kg:
-  dataset: ["asian", "1000G"]
+suppl_bfile:
+  # dataset: ["1000G_nsnps1000k", "1000G_nsnps250k", "1000G_nsnps500k", "ukb_array_nsamples5k", "ukb_array_nsamples10k"]
+  dataset: ["ukb_array_nsamples5k", "ukb_array_nsamples10k", "ukb_array_nsamples20k", "ukb_array_nsamples100k", "ukb_array_nsamples400k"]
   pcs: [10, 20, 30, 40]
-  threads: 4
+  threads: 10
   # pcaone options
   windows: [8, 16, 32, 64, 128, 256]
-  pcaonea: "--arnoldi --memory 1"
-  pcaonef: "--tol 1e-4 --maxp 40 --memory 1"
-  pcaoneh: "--tol 1e-4 --maxp 40 --memory 1 --halko"
+  pcaonef: "--svd 0 --memory 2 --maxp 40"
+  pcaoneh: "--svd 1 --memory 2 --maxp 40"
+  pcaonea: "--svd 2 --memory 2"
+  # other program options
+  terapca: "-filewrite 1 -print 2 -memory 2"
+  propca: "-vn -cl 0.001 -a"
+  flashpca: "--verbose --memory 40000"
+
+suppl_bgen:
+  dataset: ["ukb_array"]
+  pcs: [40]
+  threads: 20
+  # pcaone options
+  windows: [64]
+  pcaonef: "--svd 0 --memory 2 --maxp 40"
+  pcaoneh: "--svd 1 --memory 2 --maxp 40"
+  pcaonea: "--svd 2 --memory 2"
   # other program options
   terapca: "-filewrite 1 -print 2 -memory 2"
   propca: "-vn -cl 0.001 -a"
@@ -153,6 +168,26 @@ asian:
   bim: data/1000G/all.2504.bim
   fam: data/1000G/all.2504.fam
 
+1000G_nsnps5k:
+  bed: data/1000G_subs/nsnps.5000.bed
+  bim: data/1000G_subs/nsnps.5000.bim
+  fam: data/1000G_subs/nsnps.5000.fam
+
+1000G_nsnps250k:
+  bed: data/1000G_subs/nsnps.250000.bed
+  bim: data/1000G_subs/nsnps.250000.bim
+  fam: data/1000G_subs/nsnps.250000.fam
+
+1000G_nsnps500k:
+  bed: data/1000G_subs/nsnps.500000.bed
+  bim: data/1000G_subs/nsnps.500000.bim
+  fam: data/1000G_subs/nsnps.500000.fam
+
+1000G_nsnps1000k:
+  bed: data/1000G_subs/nsnps.1000000.bed
+  bim: data/1000G_subs/nsnps.1000000.bim
+  fam: data/1000G_subs/nsnps.1000000.fam
+
 HGDP:
   bed: data/HGDP/all.gnomad.genomes.v3.1.2.hgdp_tgp.snp.maf0.01.bed
   bim: data/HGDP/all.gnomad.genomes.v3.1.2.hgdp_tgp.snp.maf0.01.bim
@@ -168,6 +203,31 @@ ukb_array:
   bim: data/ukb_array/ukb_snp_chip.bgen.vars.bim
   fam: data/ukb_array/ukb_snp_chip.bgen.vars.fam
   bgen: data/ukb_array/perm.chip.concat.ld.qc.bgen
+
+ukb_array_nsamples5k:
+  bed: data/ukb_array_subs/nsamples.5000.bed
+  bim: data/ukb_array_subs/nsamples.5000.bim
+  fam: data/ukb_array_subs/nsamples.5000.fam
+
+ukb_array_nsamples10k:
+  bed: data/ukb_array_subs/nsamples.10000.bed
+  bim: data/ukb_array_subs/nsamples.10000.bim
+  fam: data/ukb_array_subs/nsamples.10000.fam
+
+ukb_array_nsamples20k:
+  bed: data/ukb_array_subs/nsamples.20000.bed
+  bim: data/ukb_array_subs/nsamples.20000.bim
+  fam: data/ukb_array_subs/nsamples.20000.fam
+
+ukb_array_nsamples100k:
+  bed: data/ukb_array_subs/nsamples.100000.bed
+  bim: data/ukb_array_subs/nsamples.100000.bim
+  fam: data/ukb_array_subs/nsamples.100000.fam
+
+ukb_array_nsamples400k:
+  bed: data/ukb_array_subs/nsamples.400000.bed
+  bim: data/ukb_array_subs/nsamples.400000.bim
+  fam: data/ukb_array_subs/nsamples.400000.fam
 
 datas1:
   bed: data/bySamples/ukb.samples.10000.bed

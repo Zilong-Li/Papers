@@ -12,7 +12,7 @@ include: "rules/figure1.smk"
 include: "rules/figure2.smk"
 include: "rules/figure3.smk"
 include: "rules/figure4.smk"
-include: "rules/test.smk"
+include: "rules/supplementary.smk"
 
 rule all:
     input:
