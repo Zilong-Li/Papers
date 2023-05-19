@@ -10,10 +10,14 @@ valid_scenarios = [
     "figure4",
     "figure2A",
     "figure2B",
+    "suppl_rnaseq",
     "suppl_bgen",
     "suppl_bfile",
+    "suppl_ukb",
     "test_ukb",
     "test_scrnas",
+    "stop_criteria",
+    "suppl_mev_ci",
 ]
 
 scenario = config["scenario"]
@@ -62,21 +66,48 @@ def get_all_results():
         return get_figure2A_plot()
     elif scenario == "figure2B":
         return get_figure2B_plot()
+    elif scenario == "suppl_rnaseq":
+        return get_suppl_binary_plot()
     elif scenario == "suppl_bgen":
         return get_suppl_bgen_plot()
     elif scenario == "test_scrnas":
         return get_test_summary_scrnas()
-    elif scenario == "suppl_bfile":
-        return get_test_summary()
+    elif scenario == "stop_criteria":
+        return get_stop_criteira()
+    elif scenario == "suppl_mev_ci":
+        return get_suppl_mev_ci()
+    elif scenario in ["suppl_bfile", "suppl_ukb"]:
+        return rules.collapse_bfile_summary.output
     else:
         raise RuntimeError(
             "please specify vaild scenario to run! but you won't see me.\n"
         )
 
 
+def get_suppl_mev_ci():
+    return expand(
+        rules.collapse_mev_ci.output,
+        k=PCS,
+    )
+
+
+def get_suppl_binary_plot():
+    return expand(
+        rules.collapse_binary_summary.output,
+        data=DATASETS,
+    )
+
+
 def get_suppl_bgen_plot():
     return expand(
-        rules.plot_bgen_summary.output,
+        rules.collapse_bgen_summary.output,
+        data=DATASETS,
+    )
+
+
+def get_stop_criteira():
+    return expand(
+        rules.calc_stop_criteria.output,
         k=PCS,
         data=DATASETS,
     )
@@ -90,11 +121,10 @@ def get_test_summary_scrnas():
     )
 
 
-def get_test_summary():
+def get_suppl_bfile_summary():
     return expand(
-        rules.plot_bfile_summary.output,
+        rules.collect_bfile_summary.output,
         k=PCS,
-        data=DATASETS,
     )
 
 
@@ -250,6 +280,27 @@ def get_input_dataset(wildcards):
     }
 
 
+rule run_pcaone_full:
+    input:
+        unpack(get_input_dataset),
+    output:
+        vec=os.path.join(OUTDIR, "{data}", "pcaone.full.eigvecs"),
+    log:
+        os.path.join(OUTDIR, "{data}", "pcaone.full.llog"),
+    params:
+        bfile=lambda wildcards, input: input[0][:-4],
+        out=lambda wildcards, output: output[0][:-8],
+    threads: THREADS
+    shell:
+        """
+        export MKL_NUM_THREADS={threads}
+        export NUMEXPR_NUM_THREADS={threads}
+        export OMP_NUM_THREADS={threads}
+        # touch {output}
+        {TIME} -v {PCAONE} --bfile {params.bfile} -k 100 -n {threads} -o {params.out} --svd 3 --verbose &> {log}
+        """
+
+
 rule run_pcaone_arnoldi:
     input:
         unpack(get_input_dataset),
@@ -330,7 +381,7 @@ rule run_pcaone_alg2_windows:
         export MKL_NUM_THREADS={threads}
         export NUMEXPR_NUM_THREADS={threads}
         export OMP_NUM_THREADS={threads}
-        {TIME} -v {PCAONE} --bfile {params.bfile} -k {wildcards.k} --windows {wildcards.w} -n {threads} -o {params.out} --verbose {params.pcaonef} &> {log}
+        {TIME} -v {PCAONE} --bfile {params.bfile} -k {wildcards.k} -w {wildcards.w} -n {threads} -o {params.out} --verbose {params.pcaonef} &> {log}
         """
 
 
@@ -461,6 +512,63 @@ rule run_plink2:
         """
 
 
+rule run_binary_pcaone_arnoldi:
+    output:
+        vec=os.path.join(OUTDIR, "{data}", "pcaone.a.k{k}.binary.eigvecs"),
+    log:
+        os.path.join(OUTDIR, "{data}", "pcaone.a.k{k}.binary.llog"),
+    params:
+        binary=lambda wildcards: config[wildcards.data]["binary"],
+        out=lambda wildcards, output: output[0][:-8],
+        pcaone=config[scenario]["pcaonea"],
+    threads: THREADS
+    shell:
+        """
+        export MKL_NUM_THREADS={threads}
+        export NUMEXPR_NUM_THREADS={threads}
+        export OMP_NUM_THREADS={threads}
+        {TIME} -v {PCAONE} --binary {params.binary} -k {wildcards.k} -n {threads} -o {params.out} --verbose {params.pcaone} &> {log}
+        """
+
+
+rule run_binary_pcaone_alg1:
+    output:
+        vec=os.path.join(OUTDIR, "{data}", "pcaone.h.k{k}.binary.eigvecs"),
+    log:
+        os.path.join(OUTDIR, "{data}", "pcaone.h.k{k}.binary.llog"),
+    params:
+        binary=lambda wildcards: config[wildcards.data]["binary"],
+        out=lambda wildcards, output: output[0][:-8],
+        pcaone=config[scenario]["pcaoneh"],
+    threads: THREADS
+    shell:
+        """
+        export MKL_NUM_THREADS={threads}
+        export NUMEXPR_NUM_THREADS={threads}
+        export OMP_NUM_THREADS={threads}
+        {TIME} -v {PCAONE} --binary {params.binary} -k {wildcards.k} -n {threads} -o {params.out} --verbose {params.pcaone} &> {log}
+        """
+
+
+rule run_binary_pcaone_alg2:
+    output:
+        vec=os.path.join(OUTDIR, "{data}", "pcaone.f.k{k}.binary.eigvecs"),
+    log:
+        os.path.join(OUTDIR, "{data}", "pcaone.f.k{k}.binary.llog"),
+    params:
+        binary=lambda wildcards: config[wildcards.data]["binary"],
+        out=lambda wildcards, output: output[0][:-8],
+        pcaone=config[scenario]["pcaonef"],
+    threads: THREADS
+    shell:
+        """
+        export MKL_NUM_THREADS={threads}
+        export NUMEXPR_NUM_THREADS={threads}
+        export OMP_NUM_THREADS={threads}
+        {TIME} -v {PCAONE} --binary {params.binary} -k {wildcards.k} -n {threads} -o {params.out} --verbose {params.pcaone} &> {log}
+        """
+
+
 rule run_bgen_pcaone_arnoldi:
     output:
         vec=os.path.join(OUTDIR, "{data}", "pcaone.a.k{k}.bgen.eigvecs"),
@@ -571,7 +679,7 @@ rule run_scrnas_pcaone_alg2:
         export MKL_NUM_THREADS={threads}
         export NUMEXPR_NUM_THREADS={threads}
         export OMP_NUM_THREADS={threads}
-        {TIME} -v {PCAONE} --csv {params.csv} -k {wildcards.k} --cpmed --windows {wildcards.w} --no-shuffle -n {threads} -o {params.out} --verbose {params.pcaonef} &> {log}
+        {TIME} -v {PCAONE} --csv {params.csv} -k {wildcards.k} --cpmed -w {wildcards.w} --no-shuffle -n {threads} -o {params.out} --verbose {params.pcaonef} &> {log}
         """
 
 

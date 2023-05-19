@@ -1,9 +1,6 @@
 
 snakemake@source("common.R")
 
-library(data.table)
-library(gridExtra)
-
 windows <- snakemake@params[["windows"]]
 
 ## truth <- as.matrix(fread(snakemake@input[["plink1"]])[, -c(1,2)])

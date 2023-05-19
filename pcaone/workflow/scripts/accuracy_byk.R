@@ -9,10 +9,13 @@ library(cowplot)
 
 
 inputs <- names(snakemake@input)
+K <- snakemake@wildcards[["k"]]
 truth <- NULL
-if ("vecplink1" %in% inputs) {
-  truth <- readplink1(snakemake@input[["vecplink1"]])
-}
+if ("vecfull" %in% inputs)
+  truth <- as.matrix(fread(snakemake@input[["vecfull"]]))[,1:K]
+## if ("vecplink1" %in% inputs) {
+##   truth <- readplink1(snakemake@input[["vecplink1"]])
+## }
 if (is.null(truth)) {
   truth <- as.matrix(fread(snakemake@input[["vecpcaonea"]]))
 }

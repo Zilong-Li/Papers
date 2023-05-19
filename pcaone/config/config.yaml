@@ -15,14 +15,14 @@ jlhalko: "$HOME/.julia/packages/OnlinePCA/isnHZ/bin/halko"
 julia: "$HOME/.local/bin/julia"
 
 figure1:
-  dataset: ["asian", "1000G"]
+  dataset: ["asian", "asian2", "1000G", "HGDP"]
   pcs: [2, 5, 10, 20, 30, 40]
-  threads: 4
+  threads: 10
   # pcaone options
   windows: [64]
   pcaonea: "--svd 2 --memory 2"
-  pcaonef: "--svd 0 --memory 2 --tol 1e-4 --maxp 40 --printu"
-  pcaoneh: "--svd 1 --memory 2 --tol 1e-4 --maxp 40 --printu"
+  pcaonef: "--svd 0 --memory 2 --tol-rsvd 1e-4 --maxp 40 --printu"
+  pcaoneh: "--svd 1 --memory 2 --tol-rsvd 1e-4 --maxp 40 --printu"
   # other program options
   terapca: "-filewrite 1 -print 2 -memory 2"
   propca: "-vn -cl 0.001 -a"
@@ -35,8 +35,8 @@ figure2:
   # pcaone options
   windows: [64]
   pcaonea: "--svd 2 --memory 4"
-  pcaonef: "--svd 0 --memory 2 --tol 1e-4 --maxp 40"
-  pcaoneh: "--svd 1 --memory 2 --tol 1e-4 --maxp 40"
+  pcaonef: "--svd 0 --memory 2 --tol-rsvd 1e-4 --maxp 40"
+  pcaoneh: "--svd 1 --memory 2 --tol-rsvd 1e-4 --maxp 40"
   # terapca options
   terapca: "-filewrite 1 -print 2 -memory 4"
   propca: "-vn -cl 0.001 -a"
@@ -49,8 +49,8 @@ figure2A:
   # pcaone options
   windows: [64]
   pcaonea: "--svd 2 --memory 4"
-  pcaonef: "--svd 0 --memory 2 --tol 1e-4 --maxp 40"
-  pcaoneh: "--svd 1 --memory 2 --tol 1e-4 --maxp 40"
+  pcaonef: "--svd 0 --memory 2 --tol-rsvd 1e-4 --maxp 40"
+  pcaoneh: "--svd 1 --memory 2 --tol-rsvd 1e-4 --maxp 40"
   # terapca options
   terapca: "-filewrite 1 -print 2 -memory 4"
   propca: "-vn -cl 0.001 -a"
@@ -62,8 +62,8 @@ figure2B:
   threads: 20
   # pcaone options
   pcaonea: "--svd 2 --memory 4"
-  pcaonef: "--svd 0 --memory 2 --tol 1e-4 --maxp 40"
-  pcaoneh: "--svd 1 --memory 2 --tol 1e-4 --maxp 40"
+  pcaonef: "--svd 0 --memory 2 --tol-rsvd 1e-4 --maxp 40"
+  pcaoneh: "--svd 1 --memory 2 --tol-rsvd 1e-4 --maxp 40"
   windows: [64]
   # terapca options
   terapca: "-filewrite 1 -print 2 -memory 4"
@@ -77,8 +77,8 @@ figure3:
   # pcaone options
   windows: [64]
   pcaonea: "--svd 2 --memory 20"
-  pcaonef: "--svd 0 --tol 1e-4 --maxp 20 --memory 20 --printu"
-  pcaoneh: "--svd 1 --tol 1e-9 --maxp 17 --memory 20 --printu"
+  pcaonef: "--svd 0 --tol-rsvd 1e-4 --maxp 20 --memory 20 --printu"
+  pcaoneh: "--svd 1 --tol-rsvd 1e-9 --maxp 17 --memory 20 --printu"
   # other program options
   # terapca: "-filewrite 1 -print 2 -rfetched 2000"
   terapca: "-filewrite 1 -print 2 -rfetched 4000"
@@ -99,9 +99,37 @@ figure4:
   propca: "-vn -cl 0.001 -a"
   flashpca: "--verbose --memory 20000"
 
+stop_criteria:
+  dataset: ["asian"]
+  pcs: [10]
+  threads: 20
+  # pcaone options
+  windows: [32, 64]
+  pcaonea: "--svd 2 --memory 2"
+  pcaonef: "--svd 0 --memory 2 --tol-rsvd 0 --maxp 40 --printu"
+  pcaoneh: "--svd 1 --memory 2 --tol-rsvd 0 --maxp 40 --printu"
+  # other program options
+  terapca: "-filewrite 1 -print 2 -memory 2"
+  propca: "-vn -cl 0.001 -a"
+  flashpca: "--verbose --memory 4100"
+
+suppl_rnaseq:
+  dataset: ["gtex_rnaseq"]
+  pcs: [5, 10, 20, 30, 40, 100, 200, 500]
+  threads: 10
+  # pcaone options
+  windows: [64]
+  pcaonef: "--scale 1 --svd 0 --memory 2 --maxp 40"
+  pcaoneh: "--scale 1 --svd 1 --memory 2 --maxp 40"
+  pcaonea: "--scale 1 --svd 2 --memory 2"
+  # other program options
+  terapca: "-filewrite 1 -print 2 -memory 2"
+  propca: "-vn -cl 0.001 -a"
+  flashpca: "--verbose --memory 40000"
+
 suppl_bfile:
-  # dataset: ["1000G_nsnps1000k", "1000G_nsnps250k", "1000G_nsnps500k", "ukb_array_nsamples5k", "ukb_array_nsamples10k"]
-  dataset: ["ukb_array_nsamples5k", "ukb_array_nsamples10k", "ukb_array_nsamples20k", "ukb_array_nsamples100k", "ukb_array_nsamples400k"]
+  # dataset: ["1000G_nsnps1000k", "1000G_nsnps250k", "1000G_nsnps500k"]
+  dataset: ["1000G_nsnps100k", "1000G_nsnps250k", "1000G_nsnps500k", "1000G_nsnps1000k", "1000G_nsnps2000k", "1000G_nsnps3000k", "ukb_array_nsamples1k", "ukb_array_nsamples5k", "ukb_array_nsamples10k", "ukb_array_nsamples20k", "ukb_array_nsamples100k", "ukb_array_nsamples200k"]
   pcs: [10, 20, 30, 40]
   threads: 10
   # pcaone options
@@ -114,13 +142,41 @@ suppl_bfile:
   propca: "-vn -cl 0.001 -a"
   flashpca: "--verbose --memory 40000"
 
-suppl_bgen:
-  dataset: ["ukb_array"]
-  pcs: [40]
-  threads: 20
+suppl_mev_ci:
+  dataset: ["asianS1", "asianS2", "asianS3", "asianS4", "asianS5", "asianS6", "asianS7", "asianS8", "asianS9", "asianS10"]
+  pcs: [10]
+  threads: 10
+  # pcaone options
+  windows: [64]
+  pcaonea: "--svd 2 --memory 2"
+  pcaonef: "--svd 0 --memory 2 --tol-rsvd 1e-4 --maxp 40 --printu"
+  pcaoneh: "--svd 1 --memory 2 --tol-rsvd 1e-4 --maxp 40 --printu"
+  # other program options
+  terapca: "-filewrite 1 -print 2 -memory 2"
+  propca: "-vn -cl 0.001 -a"
+  flashpca: "--verbose --memory 40000"
+
+suppl_ukb:
+  dataset: ["datas7", "datas8", "datas9", "datas10", "datas11", "datas12", "datas1", "datas2", "datas3", "datas4", "datas5", "datas6"]
+  pcs: [10, 20, 30, 40, 100]
+  threads: 10
   # pcaone options
   windows: [64]
   pcaonef: "--svd 0 --memory 2 --maxp 40"
+  pcaoneh: "--svd 1 --memory 2 --maxp 40"
+  pcaonea: "--svd 2 --memory 2"
+  # other program options
+  terapca: "-filewrite 1 -print 2 -memory 2"
+  propca: "-vn -cl 0.001 -a"
+  flashpca: "--verbose --memory 40000"
+
+suppl_bgen:
+  dataset: ["ukb_array"]
+  pcs: [20, 40]
+  threads: 20
+  # pcaone options
+  windows: [64]
+  pcaonef: "--svd 0 --memory 2 --maxp 40 -S"
   pcaoneh: "--svd 1 --memory 2 --maxp 40"
   pcaonea: "--svd 2 --memory 2"
   # other program options
@@ -135,9 +191,9 @@ test_scrnas:
   threads: 20
   # pcaone options
   windows: [4, 8, 16, 32, 64]
-  pcaonea: "--arnoldi --memory 4"
-  pcaonef: "--tol 1e-4 --maxp 40 --memory 4"
-  pcaoneh: "--tol 1e-4 --maxp 40 --memory 4 --halko"
+  pcaonef: "--svd 0 --memory 4 --maxp 40"
+  pcaoneh: "--svd 1 --memory 4 --maxp 40"
+  pcaonea: "--svd 2 --memory 4"
   # other program options
   terapca: "-filewrite 1 -print 2 -memory 2"
   propca: "-vn -cl 0.001 -a"
@@ -149,9 +205,9 @@ test_ukb:
   threads: 20
   # pcaone options
   windows: [16, 32, 64, 128]
-  pcaonea: "--arnoldi --memory 20"
-  pcaonef: "--tol 1e-4 --maxp 20 --memory 20 --printu"
-  pcaoneh: "--tol 1e-9 --maxp 20 --memory 20 --halko --printu"
+  pcaonef: "--svd 0 --memory 4 --maxp 20 --tol-rsvd 1e-9 --printu"
+  pcaoneh: "--svd 1 --memory 4 --maxp 20 --tol-rsvd 1e-4 --printu"
+  pcaonea: "--svd 2 --memory 4"
   # other program options
   # terapca: "-filewrite 1 -print 2 -rfetched 2000"
   terapca: "-filewrite 1 -print 2 -memory 2"
@@ -163,6 +219,61 @@ asian:
   bim: data/asia/THG.sim.bim
   fam: data/asia/THG.sim.fam
 
+asian2:
+  bed: data/asia/asian.maf0.05.bed
+  bim: data/asia/asian.maf0.05.bim
+  fam: data/asia/asian.maf0.05.fam
+
+asianS1:
+  bed: data/asia/seed.1.nsnps1000000.bed
+  bim: data/asia/seed.1.nsnps1000000.bim
+  fam: data/asia/seed.1.nsnps1000000.fam
+
+asianS2:
+  bed: data/asia/seed.2.nsnps1000000.bed
+  bim: data/asia/seed.2.nsnps1000000.bim
+  fam: data/asia/seed.2.nsnps1000000.fam
+
+asianS3:
+  bed: data/asia/seed.3.nsnps1000000.bed
+  bim: data/asia/seed.3.nsnps1000000.bim
+  fam: data/asia/seed.3.nsnps1000000.fam
+
+asianS4:
+  bed: data/asia/seed.4.nsnps1000000.bed
+  bim: data/asia/seed.4.nsnps1000000.bim
+  fam: data/asia/seed.4.nsnps1000000.fam
+
+asianS5:
+  bed: data/asia/seed.5.nsnps1000000.bed
+  bim: data/asia/seed.5.nsnps1000000.bim
+  fam: data/asia/seed.5.nsnps1000000.fam
+
+asianS6:
+  bed: data/asia/seed.6.nsnps1000000.bed
+  bim: data/asia/seed.6.nsnps1000000.bim
+  fam: data/asia/seed.6.nsnps1000000.fam
+
+asianS7:
+  bed: data/asia/seed.7.nsnps1000000.bed
+  bim: data/asia/seed.7.nsnps1000000.bim
+  fam: data/asia/seed.7.nsnps1000000.fam
+
+asianS8:
+  bed: data/asia/seed.8.nsnps1000000.bed
+  bim: data/asia/seed.8.nsnps1000000.bim
+  fam: data/asia/seed.8.nsnps1000000.fam
+
+asianS9:
+  bed: data/asia/seed.9.nsnps1000000.bed
+  bim: data/asia/seed.9.nsnps1000000.bim
+  fam: data/asia/seed.9.nsnps1000000.fam
+
+asianS10:
+  bed: data/asia/seed.10.nsnps1000000.bed
+  bim: data/asia/seed.10.nsnps1000000.bim
+  fam: data/asia/seed.10.nsnps1000000.fam
+
 1000G:
   bed: data/1000G/all.2504.bed
   bim: data/1000G/all.2504.bim
@@ -172,6 +283,21 @@ asian:
   bed: data/1000G_subs/nsnps.5000.bed
   bim: data/1000G_subs/nsnps.5000.bim
   fam: data/1000G_subs/nsnps.5000.fam
+
+1000G_nsnps10k:
+  bed: data/1000G_subs/nsnps.10000.bed
+  bim: data/1000G_subs/nsnps.10000.bim
+  fam: data/1000G_subs/nsnps.10000.fam
+
+1000G_nsnps50k:
+  bed: data/1000G_subs/nsnps.50000.bed
+  bim: data/1000G_subs/nsnps.50000.bim
+  fam: data/1000G_subs/nsnps.50000.fam
+
+1000G_nsnps100k:
+  bed: data/1000G_subs/nsnps.100000.bed
+  bim: data/1000G_subs/nsnps.100000.bim
+  fam: data/1000G_subs/nsnps.100000.fam
 
 1000G_nsnps250k:
   bed: data/1000G_subs/nsnps.250000.bed
@@ -188,10 +314,20 @@ asian:
   bim: data/1000G_subs/nsnps.1000000.bim
   fam: data/1000G_subs/nsnps.1000000.fam
 
+1000G_nsnps2000k:
+  bed: data/1000G_subs/nsnps.2000000.bed
+  bim: data/1000G_subs/nsnps.2000000.bim
+  fam: data/1000G_subs/nsnps.2000000.fam
+
+1000G_nsnps3000k:
+  bed: data/1000G_subs/nsnps.3000000.bed
+  bim: data/1000G_subs/nsnps.3000000.bim
+  fam: data/1000G_subs/nsnps.3000000.fam
+
 HGDP:
-  bed: data/HGDP/all.gnomad.genomes.v3.1.2.hgdp_tgp.snp.maf0.01.bed
-  bim: data/HGDP/all.gnomad.genomes.v3.1.2.hgdp_tgp.snp.maf0.01.bim
-  fam: data/HGDP/all.gnomad.genomes.v3.1.2.hgdp_tgp.snp.maf0.01.fam
+  bed: data/HGDP/all.gnomad.genomes.v3.1.2.hgdp_tgp.snp.maf0.05.bed
+  bim: data/HGDP/all.gnomad.genomes.v3.1.2.hgdp_tgp.snp.maf0.05.bim
+  fam: data/HGDP/all.gnomad.genomes.v3.1.2.hgdp_tgp.snp.maf0.05.fam
 
 ukb:
   bed: data/ukb/merge.maf0.05.bed
@@ -203,6 +339,11 @@ ukb_array:
   bim: data/ukb_array/ukb_snp_chip.bgen.vars.bim
   fam: data/ukb_array/ukb_snp_chip.bgen.vars.fam
   bgen: data/ukb_array/perm.chip.concat.ld.qc.bgen
+
+ukb_array_nsamples1k:
+  bed: data/ukb_array_subs/nsamples.1000.bed
+  bim: data/ukb_array_subs/nsamples.1000.bim
+  fam: data/ukb_array_subs/nsamples.1000.fam
 
 ukb_array_nsamples5k:
   bed: data/ukb_array_subs/nsamples.5000.bed
@@ -224,75 +365,88 @@ ukb_array_nsamples100k:
   bim: data/ukb_array_subs/nsamples.100000.bim
   fam: data/ukb_array_subs/nsamples.100000.fam
 
+ukb_array_nsamples200k:
+  bed: data/ukb_array_subs/nsamples.200000.bed
+  bim: data/ukb_array_subs/nsamples.200000.bim
+  fam: data/ukb_array_subs/nsamples.200000.fam
+
+ukb_array_nsamples300k:
+  bed: data/ukb_array_subs/nsamples.300000.bed
+  bim: data/ukb_array_subs/nsamples.300000.bim
+  fam: data/ukb_array_subs/nsamples.300000.fam
+
 ukb_array_nsamples400k:
   bed: data/ukb_array_subs/nsamples.400000.bed
   bim: data/ukb_array_subs/nsamples.400000.bim
   fam: data/ukb_array_subs/nsamples.400000.fam
 
 datas1:
-  bed: data/bySamples/ukb.samples.10000.bed
-  bim: data/bySamples/ukb.samples.10000.bim
-  fam: data/bySamples/ukb.samples.10000.fam
+  bed: data/bySamples/nsamples.10000.bed
+  bim: data/bySamples/nsamples.10000.bim
+  fam: data/bySamples/nsamples.10000.fam
 
 datas2:
-  bed: data/bySamples/ukb.samples.20000.bed
-  bim: data/bySamples/ukb.samples.20000.bim
-  fam: data/bySamples/ukb.samples.20000.fam
+  bed: data/bySamples/nsamples.20000.bed
+  bim: data/bySamples/nsamples.20000.bim
+  fam: data/bySamples/nsamples.20000.fam
 
 datas3:
-  bed: data/bySamples/ukb.samples.40000.bed
-  bim: data/bySamples/ukb.samples.40000.bim
-  fam: data/bySamples/ukb.samples.40000.fam
+  bed: data/bySamples/nsamples.40000.bed
+  bim: data/bySamples/nsamples.40000.bim
+  fam: data/bySamples/nsamples.40000.fam
 
 datas4:
-  bed: data/bySamples/ukb.samples.60000.bed
-  bim: data/bySamples/ukb.samples.60000.bim
-  fam: data/bySamples/ukb.samples.60000.fam
+  bed: data/bySamples/nsamples.60000.bed
+  bim: data/bySamples/nsamples.60000.bim
+  fam: data/bySamples/nsamples.60000.fam
 
 datas5:
-  bed: data/bySamples/ukb.samples.80000.bed
-  bim: data/bySamples/ukb.samples.80000.bim
-  fam: data/bySamples/ukb.samples.80000.fam
+  bed: data/bySamples/nsamples.80000.bed
+  bim: data/bySamples/nsamples.80000.bim
+  fam: data/bySamples/nsamples.80000.fam
 
 datas6:
-  bed: data/bySamples/ukb.samples.100000.bed
-  bim: data/bySamples/ukb.samples.100000.bim
-  fam: data/bySamples/ukb.samples.100000.fam
+  bed: data/bySamples/nsamples.100000.bed
+  bim: data/bySamples/nsamples.100000.bim
+  fam: data/bySamples/nsamples.100000.fam
 
 datas7:
-  bed: data/bySnps/ukb.nsnps.200000.bed
-  bim: data/bySnps/ukb.nsnps.200000.bim
-  fam: data/bySnps/ukb.nsnps.200000.fam
+  bed: data/bySnps/nsnps.200000.bed
+  bim: data/bySnps/nsnps.200000.bim
+  fam: data/bySnps/nsnps.200000.fam
 
 datas8:
-  bed: data/bySnps/ukb.nsnps.400000.bed
-  bim: data/bySnps/ukb.nsnps.400000.bim
-  fam: data/bySnps/ukb.nsnps.400000.fam
+  bed: data/bySnps/nsnps.400000.bed
+  bim: data/bySnps/nsnps.400000.bim
+  fam: data/bySnps/nsnps.400000.fam
 
 datas9:
-  bed: data/bySnps/ukb.nsnps.600000.bed
-  bim: data/bySnps/ukb.nsnps.600000.bim
-  fam: data/bySnps/ukb.nsnps.600000.fam
+  bed: data/bySnps/nsnps.600000.bed
+  bim: data/bySnps/nsnps.600000.bim
+  fam: data/bySnps/nsnps.600000.fam
 
 datas10:
-  bed: data/bySnps/ukb.nsnps.800000.bed
-  bim: data/bySnps/ukb.nsnps.800000.bim
-  fam: data/bySnps/ukb.nsnps.800000.fam
+  bed: data/bySnps/nsnps.800000.bed
+  bim: data/bySnps/nsnps.800000.bim
+  fam: data/bySnps/nsnps.800000.fam
 
 datas11:
-  bed: data/bySnps/ukb.nsnps.1000000.bed
-  bim: data/bySnps/ukb.nsnps.1000000.bim
-  fam: data/bySnps/ukb.nsnps.1000000.fam
+  bed: data/bySnps/nsnps.1000000.bed
+  bim: data/bySnps/nsnps.1000000.bim
+  fam: data/bySnps/nsnps.1000000.fam
 
 datas12:
-  bed: data/bySnps/ukb.nsnps.2000000.bed
-  bim: data/bySnps/ukb.nsnps.2000000.bim
-  fam: data/bySnps/ukb.nsnps.2000000.fam
+  bed: data/bySnps/nsnps.2000000.bed
+  bim: data/bySnps/nsnps.2000000.bim
+  fam: data/bySnps/nsnps.2000000.fam
 
 datas13:
-  bed: data/bySnps/ukb.nsnps.3000000.bed
-  bim: data/bySnps/ukb.nsnps.3000000.bim
-  fam: data/bySnps/ukb.nsnps.3000000.fam
+  bed: data/bySnps/nsnps.3000000.bed
+  bim: data/bySnps/nsnps.3000000.bim
+  fam: data/bySnps/nsnps.3000000.fam
+
+gtex_rnaseq:
+  binary: data/gtex/gtex_rnaseq_gene_tpm.perm.bin
 
 brain:
   csv: data/brain/Data.c0.zst

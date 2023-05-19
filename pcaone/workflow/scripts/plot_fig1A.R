@@ -70,10 +70,12 @@ names(log) <- KK
 ## K <- "10"
 K <- "40"
 iK <- which(KK == K)
-file.plink1 <- snakemake@input[["vecplink1"]][[iK]]
+## file.plink1 <- snakemake@input[["vecplink1"]][[iK]]
+## truth <- as.matrix(fread(file.plink1)[, -c(1, 2)])
+file.pcaone.full <- snakemake@input[["vecfull"]]
+truth <- as.matrix(fread(file.pcaone.full)[,1:K])
 file.pcaone.h <- snakemake@input[["vecpcaoneh"]][[iK]]
 file.pcaone.f <- snakemake@input[["vecpcaonef"]][[iK]]
-truth <- as.matrix(fread(file.plink1)[, -c(1, 2)])
 prefix <- gsub(".eigvecs", "", file.pcaone.h)
 C.pcaone.h <- sapply(1:epochs[iK, "pcaone.h"], function(i) {
   test <- as.matrix(fread(paste0(prefix, ".epoch.", i - 1, ".eigvecs")))

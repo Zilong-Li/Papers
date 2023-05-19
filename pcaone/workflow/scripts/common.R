@@ -3,12 +3,15 @@ library(data.table)
 library(ggplot2)
 library(dplyr)
 library(cowplot)
+library(gridGraphics)
+library(gridExtra)
+
 
 norm_vec <- function(x) {
   sqrt(sum(x^2))
 }
 
-mev <- function(Y, truth = X) {
+mev <- function(Y, truth) {
   if (!isTRUE(all.equal(dim(Y), dim(truth)))) {
     return(NA)
   }
@@ -255,6 +258,32 @@ fancyname <- function(c, bold = FALSE) {
     "propca" = expression(paste("ProPCA")),
     "flashpca" = expression(paste("FlashPCA2")),
     "plink2" = expression(paste("Plink2(FastPCA)"))
+  )
+  if (bold) {
+    return(sapply(c, function(i) nb[[i]]))
+  } else {
+    return(sapply(c, function(i) np[[i]]))
+  }
+}
+
+fancyname2 <- function(c, bold = FALSE) {
+  nb <- list(
+    "pcaone.h" = expression(paste(bold("PCAone"[H + Y]))),
+    "pcaone.f" = expression(paste(bold("PCAone"))),
+    "pcaone.a" = expression(paste(bold("PCAone"[Arnoldi]))),
+    "terapca" = expression(paste(bold("TeraPCA"))),
+    "propca" = expression(paste(bold("ProPCA*"))),
+    "flashpca" = expression(paste(bold("FlashPCA2"))),
+    "plink2" = expression(paste(bold("Plink2*")))
+  )
+  np <- list(
+    "pcaone.h" = expression(paste("PCAone"[H + Y])),
+    "pcaone.f" = expression(paste("PCAone")),
+    "pcaone.a" = expression(paste("PCAone"[Arnoldi])),
+    "terapca" = expression(paste("TeraPCA")),
+    "propca" = expression(paste("ProPCA")),
+    "flashpca" = expression(paste("FlashPCA2")),
+    "plink2" = expression(paste("Plink2"))
   )
   if (bold) {
     return(sapply(c, function(i) nb[[i]]))

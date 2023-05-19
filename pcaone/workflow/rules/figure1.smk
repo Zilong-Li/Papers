@@ -3,7 +3,7 @@ DIRFIG = os.path.join(OUTDIR, "figure1")
 
 rule fig1_accuracy:
     input:
-        vecplink1=rules.run_plink1.output.vec,
+        vecfull=rules.run_pcaone_full.output.vec,
         vecplink2=rules.run_plink2.output.vec,
         vecpcaonea=rules.run_pcaone_arnoldi.output.vec,
         vecpcaoneh=rules.run_pcaone_alg1.output.vec,
@@ -11,7 +11,6 @@ rule fig1_accuracy:
         vecflashpca=rules.run_flashpca.output.vec,
         vecterapca=rules.run_terapca.output.vec,
         vecpropca=rules.run_propca.output.vec,
-        logplink1=rules.run_plink1.log,
         logplink2=rules.run_plink2.log,
         logpcaonea=rules.run_pcaone_arnoldi.log,
         logpcaoneh=rules.run_pcaone_alg1.log,
@@ -37,7 +36,8 @@ rule plot_fig1A:
         propca=expand(rules.run_propca.log, k=PCS, allow_missing=True),
         flashpca=expand(rules.run_flashpca.log, k=PCS, allow_missing=True),
         rds=expand(rules.fig1_accuracy.output.rds, k=PCS, allow_missing=True),
-        vecplink1=expand(rules.run_plink1.output.vec, k=PCS, allow_missing=True),
+        # vecplink1=expand(rules.run_plink1.output.vec, k=PCS, allow_missing=True),
+        vecfull=expand(rules.run_pcaone_full.output.vec, k=PCS, allow_missing=True),
         vecpcaoneh=expand(rules.run_pcaone_alg1.output.vec, k=PCS, allow_missing=True),
         vecpcaonef=expand(rules.run_pcaone_alg2.output.vec, k=PCS, allow_missing=True),
     output:
