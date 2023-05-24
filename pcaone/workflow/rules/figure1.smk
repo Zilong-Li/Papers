@@ -54,7 +54,7 @@ rule plot_fig1A:
 
 rule plot_fig1B:
     input:
-        vecplink1=expand(rules.run_plink1.output.vec, k=["2"], allow_missing=True),
+        vecfull=expand(rules.run_pcaone_full.output.vec, k=["2"], allow_missing=True),
         vecfastpca=expand(rules.run_fastpca.output.vec, k=["2"], allow_missing=True),
         vecplink2=expand(rules.run_plink2.output.vec, k=["2"], allow_missing=True),
         vecpcaonea=expand(

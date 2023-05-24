@@ -16,6 +16,7 @@ julia: "$HOME/.local/bin/julia"
 
 figure1:
   dataset: ["asian", "asian2", "1000G", "HGDP"]
+  label: ""
   pcs: [2, 5, 10, 20, 30, 40]
   threads: 10
   # pcaone options
@@ -30,6 +31,7 @@ figure1:
 
 figure2:
   dataset: "NA"
+  label: ""
   pcs: [20, 40]
   threads: 20
   # pcaone options
@@ -44,6 +46,7 @@ figure2:
 
 figure2A:
   dataset: ["datas1", "datas2", "datas3", "datas4", "datas5", "datas6"]
+  label: ""
   pcs: [20, 40]
   threads: 20
   # pcaone options
@@ -58,6 +61,7 @@ figure2A:
 
 figure2B:
   dataset: ["datas7", "datas8", "datas9", "datas10", "datas11", "datas12", "datas13"]
+  label: ""
   pcs: [20, 40]
   threads: 20
   # pcaone options
@@ -72,6 +76,7 @@ figure2B:
 
 figure3:
   dataset: ["ukb"]
+  label: ""
   pcs: [40]
   threads: 20
   # pcaone options
@@ -87,6 +92,7 @@ figure3:
 
 figure4:
   dataset: ["brain_v1"]
+  label: ""
   pcs: [40]
   threads: 20
   # pcaone options
@@ -100,11 +106,12 @@ figure4:
   flashpca: "--verbose --memory 20000"
 
 stop_criteria:
-  dataset: ["asian"]
-  pcs: [10]
+  dataset: ["asian", "1000G"]
+  label: ""
+  pcs: [10, 40]
   threads: 20
   # pcaone options
-  windows: [32, 64]
+  windows: [64]
   pcaonea: "--svd 2 --memory 2"
   pcaonef: "--svd 0 --memory 2 --tol-rsvd 0 --maxp 40 --printu"
   pcaoneh: "--svd 1 --memory 2 --tol-rsvd 0 --maxp 40 --printu"
@@ -115,6 +122,7 @@ stop_criteria:
 
 suppl_rnaseq:
   dataset: ["gtex_rnaseq"]
+  label: "data/gtex/GTEx_Analysis_v8_RNAseq_samples.txt"
   pcs: [5, 10, 20, 30, 40, 100, 200, 500]
   threads: 10
   # pcaone options
@@ -130,10 +138,11 @@ suppl_rnaseq:
 suppl_bfile:
   # dataset: ["1000G_nsnps1000k", "1000G_nsnps250k", "1000G_nsnps500k"]
   dataset: ["1000G_nsnps100k", "1000G_nsnps250k", "1000G_nsnps500k", "1000G_nsnps1000k", "1000G_nsnps2000k", "1000G_nsnps3000k", "ukb_array_nsamples1k", "ukb_array_nsamples5k", "ukb_array_nsamples10k", "ukb_array_nsamples20k", "ukb_array_nsamples100k", "ukb_array_nsamples200k"]
-  pcs: [10, 20, 30, 40]
+  label: ""
+  pcs: [10, 20, 30, 40, 100]
   threads: 10
   # pcaone options
-  windows: [8, 16, 32, 64, 128, 256]
+  windows: [64]
   pcaonef: "--svd 0 --memory 2 --maxp 40"
   pcaoneh: "--svd 1 --memory 2 --maxp 40"
   pcaonea: "--svd 2 --memory 2"
@@ -144,6 +153,7 @@ suppl_bfile:
 
 suppl_mev_ci:
   dataset: ["asianS1", "asianS2", "asianS3", "asianS4", "asianS5", "asianS6", "asianS7", "asianS8", "asianS9", "asianS10"]
+  label: ""
   pcs: [10]
   threads: 10
   # pcaone options
@@ -158,6 +168,7 @@ suppl_mev_ci:
 
 suppl_ukb:
   dataset: ["datas7", "datas8", "datas9", "datas10", "datas11", "datas12", "datas1", "datas2", "datas3", "datas4", "datas5", "datas6"]
+  label: ""
   pcs: [10, 20, 30, 40, 100]
   threads: 10
   # pcaone options
@@ -172,6 +183,7 @@ suppl_ukb:
 
 suppl_bgen:
   dataset: ["ukb_array"]
+  label: ""
   pcs: [20, 40]
   threads: 20
   # pcaone options
@@ -186,6 +198,7 @@ suppl_bgen:
 
 test_scrnas:
   dataset: ["brain_v1"]
+  label: ""
   # dataset: ["brain", "brain_v1", "brainsp","brainsp_v1","pbmc", "pbmc_v1", "pancreas", "pancreas_v1"]
   pcs: [20, 40]
   threads: 20
@@ -201,6 +214,7 @@ test_scrnas:
 
 test_ukb:
   dataset: ["ukb"]
+  label: ""
   pcs: [40]
   threads: 20
   # pcaone options
@@ -447,6 +461,7 @@ datas13:
 
 gtex_rnaseq:
   binary: data/gtex/gtex_rnaseq_gene_tpm.perm.bin
+  label: data/gtex/GTEx_Analysis_v8_RNAseq_samples.txt
 
 brain:
   csv: data/brain/Data.c0.zst

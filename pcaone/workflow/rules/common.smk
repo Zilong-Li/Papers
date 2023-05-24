@@ -67,7 +67,7 @@ def get_all_results():
     elif scenario == "figure2B":
         return get_figure2B_plot()
     elif scenario == "suppl_rnaseq":
-        return get_suppl_binary_plot()
+        return get_suppl_rnaseq_plot()
     elif scenario == "suppl_bgen":
         return get_suppl_bgen_plot()
     elif scenario == "test_scrnas":
@@ -91,17 +91,20 @@ def get_suppl_mev_ci():
     )
 
 
-def get_suppl_binary_plot():
-    return expand(
-        rules.collapse_binary_summary.output,
-        data=DATASETS,
+def get_suppl_rnaseq_plot():
+    return (
+        expand(
+            rules.collapse_binary_summary.output,
+            data=DATASETS,
+        ),
+        expand(rules.make_pca_plot.output, data=DATASETS),
     )
 
 
 def get_suppl_bgen_plot():
-    return expand(
-        rules.collapse_bgen_summary.output,
-        data=DATASETS,
+    return expand(rules.collapse_bgen_summary.output, data=DATASETS,), expand(
+        rules.collect_bfile_summary.output,
+        k=PCS,
     )
 
 
@@ -185,7 +188,7 @@ def get_figure2B_plot():
 
 def get_figure1_plot():
     return expand(
-        rules.plot_fig1A.output,
+        rules.plot_fig1.output,
         k=PCS,
         data=DATASETS,
     )
@@ -306,6 +309,7 @@ rule run_pcaone_arnoldi:
         unpack(get_input_dataset),
     output:
         vec=os.path.join(OUTDIR, "{data}", "pcaone.a.k{k}.eigvecs"),
+        val=os.path.join(OUTDIR, "{data}", "pcaone.a.k{k}.eigvals"),
     log:
         os.path.join(OUTDIR, "{data}", "pcaone.a.k{k}.llog"),
     params:
@@ -515,6 +519,7 @@ rule run_plink2:
 rule run_binary_pcaone_arnoldi:
     output:
         vec=os.path.join(OUTDIR, "{data}", "pcaone.a.k{k}.binary.eigvecs"),
+        val=os.path.join(OUTDIR, "{data}", "pcaone.a.k{k}.binary.eigvals"),
     log:
         os.path.join(OUTDIR, "{data}", "pcaone.a.k{k}.binary.llog"),
     params:

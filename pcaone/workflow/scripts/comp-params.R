@@ -46,7 +46,7 @@ if (rule %in% c("collapse_bgen_summary",  "collapse_binary_summary")) {
 
   pdf(snakemake@output[["pdf"]], w = 14, h = 7)
   par(mfrow = c(1, 2))
-  barplot(d.epochs, beside = T, col = factor(rownames(d.mev)))
+  barplot(d.epochs, beside = T, col = factor(rownames(d.mev)), ylab = "Epochs")
   plot_mev_byk(d.mev, ymin = min(d.mev))
   dev.off()
 
@@ -146,11 +146,12 @@ if (rule == "collect_bfile_summary") {
 
   saveRDS(res, snakemake@output[["rds"]])
 
+  mw <- min(sapply(lapply(log, rownames), length))
+  if( length(mw) == 1)
+    quit()
+
   windows <- rownames(log[[1]])
   windows <- gsub("windows", replacement = "w", x = windows)
-
-  if( length(windows) == 1)
-    quit()
 
   ## res <- readRDS("results/supplementary/suppl_ukb_bysamples/summary.k30.bfile.rds")
   ## res <- readRDS("results/supplementary/suppl_bfile/summary.k40.bfile.rds")

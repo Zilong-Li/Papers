@@ -5,6 +5,7 @@ library(dplyr)
 library(cowplot)
 library(gridGraphics)
 library(gridExtra)
+library(gtable)
 
 
 norm_vec <- function(x) {
@@ -15,9 +16,10 @@ mev <- function(Y, truth) {
   if (!isTRUE(all.equal(dim(Y), dim(truth)))) {
     return(NA)
   }
-  mean(apply(truth, 2, function(y) {
+  o <- mean(apply(truth, 2, function(y) {
     norm_vec(t(Y) %*% y)
-  }))
+  })) ## could be o > 1 or o < 0
+  max(0, min(1, o))
 }
 
 mev_byk <- function(X, Y) {

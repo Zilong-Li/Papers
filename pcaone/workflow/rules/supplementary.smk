@@ -1,6 +1,18 @@
 DIRSUPP = os.path.join(OUTDIR, "supplementary")
 
 
+rule make_pca_plot:
+    input:
+        vec=expand(rules.run_binary_pcaone_arnoldi.output.vec, k=PCS, allow_missing=True),
+        val=expand(rules.run_binary_pcaone_arnoldi.output.val, k=PCS, allow_missing=True),
+    output:
+        rds=os.path.join(DIRSUPP, scenario, "{data}.pca.rds"),
+    params:
+        label=config[scenario]["label"],
+    script:
+        "../scripts/pca.R"
+
+
 rule calc_mev_ci:
     input:
         vecfull=rules.run_pcaone_full.output.vec,

@@ -50,45 +50,6 @@ if(rule == "collapse_mev_ci") {
   quit()
 }
 
-## iram <- as.matrix(fread("results/asian/pcaone.a.k40.eigvecs", h = F, data.table = F))
-## pcaone <- as.matrix(fread("results/asian/pcaone.f.k40.eigvecs", h = F, data.table = F))
-## halko <- as.matrix(fread("results/asian/pcaone.h.k40.eigvecs", h = F, data.table = F))
-
-## norm_vec <- function(x) {
-##   sqrt(sum(x^2))
-## }
-
-## mev <- function(Y, truth) {
-##   if (!isTRUE(all.equal(dim(Y), dim(truth)))) {
-##     return(NA)
-##   }
-##   mean(apply(truth, 2, function(x) {
-##     norm_vec(t(Y) %*% x)
-##   }))
-## }
-
-## (t(Y[sam,1:2]) %*% truth[sam,1:2])
-
-## new <- iram
-
-## mean(Y[,1])
-
-## rmse(Y, truth)
-
-
-## sam <- 1:100
-## Y <- pcaone[sam,1:2]
-## truth <- new[sam,1:2]
-
-
-## new[,2] <- -new[,2]
-
-## mev(pcaone[sam,1:2], iram[sam,1:2])
-
-## mev(pcaone[sam,1:2], new[sam,1:2])
-
-
-## dim(pcaone)
 
 
 ## mev.ci <- function(x, truth, iter = 100, k = NULL) {
