@@ -12,6 +12,17 @@ rule make_pca_plot:
     script:
         "../scripts/pca.R"
 
+rule make_csv_pca_plot:
+    input:
+        vec=expand(rules.run_csv_pcaone_arnoldi.output.vec, k=PCS, allow_missing=True),
+        val=expand(rules.run_csv_pcaone_arnoldi.output.val, k=PCS, allow_missing=True),
+    output:
+        rds=os.path.join(DIRSUPP, scenario, "{data}.pca.csv.rds"),
+    params:
+        label=config[scenario]["label"],
+    script:
+        "../scripts/pca.R"
+
 
 rule calc_mev_ci:
     input:
@@ -49,6 +60,26 @@ rule collapse_mev_ci:
         os.path.join(DIRSUPP, scenario, "mev.ci.k{k}.llog"),
     script:
         "../scripts/comp-mev-ci.R"
+
+
+rule calc_csv_accuracy:
+    input:
+        pcaonea=rules.run_csv_pcaone_arnoldi.output.vec,
+        pcaoneh=rules.run_csv_pcaone_alg1.output.vec,
+        pcaonef=expand(
+            rules.run_csv_pcaone_alg2.output.vec,
+            w=config[scenario]["windows"],
+            allow_missing=True,
+        ),
+    output:
+        rds=os.path.join(DIRSUPP, "{data}.acc.k{k}.csv.rds"),
+        pdf=os.path.join(DIRSUPP, "{data}.acc.k{k}.csv.pdf"),
+    log:
+        os.path.join(DIRSUPP, "{data}.acc.k{k}.csv.llog"),
+    params:
+        windows=config[scenario]["windows"],
+    script:
+        "../scripts/pcaone_acc.R"
 
 
 rule calc_binary_accuracy:
@@ -90,6 +121,23 @@ rule calc_bgen_accuracy:
     script:
         "../scripts/pcaone_acc.R"
 
+rule calc_csv_log:
+    input:
+        pcaoneh=rules.run_csv_pcaone_alg1.log,
+        pcaonef=expand(
+            rules.run_csv_pcaone_alg2.log,
+            w=config[scenario]["windows"],
+            allow_missing=True,
+        ),
+    output:
+        rds=os.path.join(DIRSUPP, "{data}.log.k{k}.csv.rds"),
+        pdf=os.path.join(DIRSUPP, "{data}.log.k{k}.csv.pdf"),
+    log:
+        os.path.join(DIRSUPP, "{data}.acc.k{k}.csv.llog"),
+    params:
+        windows=config[scenario]["windows"],
+    script:
+        "../scripts/pcaone_log.R"
 
 rule calc_binary_log:
     input:
@@ -235,12 +283,28 @@ rule collect_bfile_summary:
         acc=expand(
             rules.calc_bfile_accuracy.output.rds, data=DATASETS, allow_missing=True
         ),
+        val=expand(rules.run_pcaone_arnoldi.output.val, data=DATASETS, allow_missing=True),
     output:
         rds=os.path.join(DIRSUPP, scenario, "summary.k{k}.bfile.rds"),
     params:
         data=DATASETS,
     log:
         os.path.join(DIRSUPP, scenario, "summary.k{k}.bfile.llog"),
+    script:
+        "../scripts/comp-params.R"
+
+
+rule collapse_csv_summary:
+    input:
+        log=expand(rules.calc_csv_log.output.rds, k=PCS, allow_missing=True),
+        acc=expand(rules.calc_csv_accuracy.output.rds, k=PCS, allow_missing=True),
+    output:
+        rds=os.path.join(DIRSUPP, scenario, "summary.{data}.csv.rds"),
+        pdf=os.path.join(DIRSUPP, scenario, "summary.{data}.csv.pdf"),
+    params:
+        k=PCS,
+    log:
+        os.path.join(DIRSUPP, scenario, "summary.{data}.csv.llog"),
     script:
         "../scripts/comp-params.R"
 
@@ -292,10 +356,10 @@ rule collapse_bgen_summary:
 
 rule get_scrnas_acc:
     input:
-        pcaonea=rules.run_scrnas_pcaone_arnoldi.output.vec,
-        pcaoneh=rules.run_scrnas_pcaone_alg1.output.vec,
+        pcaonea=rules.run_csv_pcaone_arnoldi.output.vec,
+        pcaoneh=rules.run_csv_pcaone_alg1.output.vec,
         pcaonef=expand(
-            rules.run_scrnas_pcaone_alg2.output.vec,
+            rules.run_csv_pcaone_alg2.output.vec,
             w=config[scenario]["windows"],
             allow_missing=True,
         ),
@@ -312,9 +376,9 @@ rule get_scrnas_acc:
 
 rule get_scrnas_log:
     input:
-        pcaoneh=rules.run_scrnas_pcaone_alg1.log,
+        pcaoneh=rules.run_csv_pcaone_alg1.log,
         pcaonef=expand(
-            rules.run_scrnas_pcaone_alg2.log,
+            rules.run_csv_pcaone_alg2.log,
             w=config[scenario]["windows"],
             allow_missing=True,
         ),

@@ -3,17 +3,17 @@ DIRFIG = os.path.join(OUTDIR, "figure4")
 
 rule get_scrnas_brain:
     input:
-        pcaonea=rules.run_scrnas_pcaone_arnoldi.output.vec,
-        logpcaonea=rules.run_scrnas_pcaone_arnoldi.log,
-        pcaoneh=rules.run_scrnas_pcaone_alg1.output.vec,
-        logpcaoneh=rules.run_scrnas_pcaone_alg1.log,
+        pcaonea=rules.run_csv_pcaone_arnoldi.output.vec,
+        logpcaonea=rules.run_csv_pcaone_arnoldi.log,
+        pcaoneh=rules.run_csv_pcaone_alg1.output.vec,
+        logpcaoneh=rules.run_csv_pcaone_alg1.log,
         pcaonef=expand(
-            rules.run_scrnas_pcaone_alg2.output.vec,
+            rules.run_csv_pcaone_alg2.output.vec,
             w=config[scenario]["windows"],
             allow_missing=True,
         ),
         logpcaonef=expand(
-            rules.run_scrnas_pcaone_alg2.log,
+            rules.run_csv_pcaone_alg2.log,
             w=config[scenario]["windows"],
             allow_missing=True,
         ),

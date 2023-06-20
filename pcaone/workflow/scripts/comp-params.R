@@ -3,13 +3,14 @@
 ## source("workflow/scripts/common.R")
 
 rule <- snakemake@rule
+scenario <- snakemake@config["scenario"]
 
 cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#0072B2", "#D55E00", "#CC79A7", "#F0E442")
 palette(cbPalette)
 
-
-plot_mev_byk <- function(d.mev, ymin) {
-  ## ymin <- min(d.mev)
+plot_mev_byk <- function(d.mev, ymin = NULL, legend = TRUE) {
+  if(is.null(ymin))
+    ymin <- min(d.mev)
   n <- ncol(d.mev)
   data <- rownames(d.mev)
   plot(1, bty = "l", type = "n", xaxt = "n", col = "transparent", cex.main = 2.0, cex.axis = 1.2, cex.lab = 1.2, xlim = c(1, n), ylim = c(ymin, 1.0), ylab = "MEV", xlab = "")
@@ -17,11 +18,27 @@ plot_mev_byk <- function(d.mev, ymin) {
     points(d.mev[d, ], type = "b", lwd = 2, col = which(factor(data) == d))
   }
   axis(1, at = 1:n, labels = paste0("K=",colnames(d.mev)), cex.axis = 1.2)
-  legend("bottomright", legend = data, fill = factor(data), cex = 1.2, bty = "n")
+  if(legend)
+    legend("bottomright", legend = data, fill = factor(data), cex = 1.2, bty = "n")
 }
 
+plot_eigvals <- function(d.mev, ymin = NULL, legend = TRUE) {
+  if(is.null(ymin))
+    ymin <- min(d.mev)
+  n <- ncol(d.mev)
+  data <- rownames(d.mev)
+  plot(1, ylim = c(min(d.mev), max(d.mev)), log = "y", bty = "l", type = "n", xaxt = "n", col = "transparent", cex.main = 2.0, cex.axis = 1.2, cex.lab = 1.2, xlim = c(1, n), ylab = "Eigenvalues", xlab = "PCs")
+  for (d in data) {
+    points(d.mev[d, ], type = "b", lwd = 2, col = which(factor(data) == d))
+  }
+  ## axis(1, at = 1:n, labels = paste0("K=",colnames(d.mev)), cex.axis = 1.2)
+  if(legend)
+    legend("topright", legend = data, fill = factor(data), cex = 1.2, bty = "n")
+}
+
+
 ## this is by PCs
-if (rule %in% c("collapse_bgen_summary",  "collapse_binary_summary")) {
+if (rule %in% c("collapse_bgen_summary",  "collapse_binary_summary",  "collapse_csv_summary")) {
   log <- lapply(snakemake@input[["log"]], readRDS)
   names(log) <- snakemake@params[["k"]]
   acc <- lapply(snakemake@input[["acc"]], readRDS)
@@ -46,8 +63,12 @@ if (rule %in% c("collapse_bgen_summary",  "collapse_binary_summary")) {
 
   pdf(snakemake@output[["pdf"]], w = 14, h = 7)
   par(mfrow = c(1, 2))
-  barplot(d.epochs, beside = T, col = factor(rownames(d.mev)), ylab = "Epochs")
-  plot_mev_byk(d.mev, ymin = min(d.mev))
+  if (scenario == "suppl_rnaseq")
+    barplot(d.epochs, beside = T, col = factor(rownames(d.mev)), ylab = "Epochs",  main = "GTEx bulk RNA-seq data (M=56200, N=17382)")
+  if (scenario == "suppl_meta")
+    barplot(d.epochs, ylim = c(0, max(d.epochs)+3),beside = T, col = factor(rownames(d.mev)), ylab = "Epochs",  main = "MetaHit data (M=192140, N=528)")
+  legend("topleft",bty = "n", cex = 1.5, legend = c(expression("PCAone"), expression(paste("PCAone"[H + Y]))), fill = factor(rownames(d.epochs)))
+  plot_mev_byk(d.mev, ymin = min(d.mev), legend = FALSE)
   dev.off()
 
 }
@@ -55,20 +76,30 @@ if (rule %in% c("collapse_bgen_summary",  "collapse_binary_summary")) {
 if (rule == "collapse_bfile_summary") {
 
   ## saveRDS(snakemake, snakemake@output[["rds"]])
-  ## snakemake <- readRDS("results/supplementary/suppl_ukb_bysamples/summary.bfile.rds")
+  ## pdf(snakemake@output[["pdf1"]])
+  ## plot(1)
+  ## dev.off()
+  ## pdf(snakemake@output[["pdf2"]])
+  ## plot(1)
+  ## dev.off()
   ## quit()
+  ## snakemake <- readRDS("results/supplementary/suppl_bfile/summary.bfile.rds")
 
   res <- lapply(snakemake@input[["rds"]], readRDS)
   names(res) <- snakemake@params[["k"]]
-  saveRDS(res, snakemake@output[["rds"]])
 
-  ## snakemake <- readRDS("results/supplementary/suppl_ukb/summary.bfile.rds")
+  saveRDS(res, snakemake@output[["rds"]])
 
   log <- sapply(res, "[[", "log")
   acc <- sapply(res, "[[", "acc")
+  eigvals <- sapply(res, "[[", "eigvals")
   rownames(acc)
 
-  scenario <- snakemake@config["scenario"]
+  eigvals.a <- t(apply(eigvals, 1, function(fn) {
+    e <- read.table(fn[length(fn)])[,1]
+    as.numeric(e)
+  }))
+
 
   if( scenario == "suppl_ukb" ) {
     ukbnames <- list("datas1" = "ukb_nsamples_10K",
@@ -85,6 +116,25 @@ if (rule == "collapse_bfile_summary") {
                      "datas12" = "ukb_nsnps_2M",
                      "datas13" = "ukb_nsnps_3M"
                      )
+    rownames(acc) <- sapply(rownames(acc), function(i) ukbnames[[i]])
+    rownames(log) <- sapply(rownames(log), function(i) ukbnames[[i]])
+  }
+
+
+  if( scenario == "suppl_bfile" ) {
+    ukbnames <- list("1000G_nsnps200k" = "1000G_nsnps_200K",
+                      "1000G_nsnps400k" = "1000G_nsnps_400K",
+                      "1000G_nsnps600k" = "1000G_nsnps_600K",
+                      "1000G_nsnps800k" = "1000G_nsnps_800K",
+                      "1000G_nsnps1000k" =  "1000G_nsnps_1M",
+                      "1000G_nsnps2000k" =  "1000G_nsnps_2M",
+                      "ukb_array_nsamples10k" = "ukb_nsamples_10K",
+                      "ukb_array_nsamples20k" = "ukb_nsamples_20K",
+                      "ukb_array_nsamples40k" = "ukb_nsamples_40K",
+                      "ukb_array_nsamples60k" = "ukb_nsamples_60K",
+                      "ukb_array_nsamples80k" = "ukb_nsamples_80K",
+                      "ukb_array_nsamples100k" = "ukb_nsamples_100K",
+                      "ukb_array_nsamples200k" = "ukb_nsamples_200K" )
     rownames(acc) <- sapply(rownames(acc), function(i) ukbnames[[i]])
     rownames(log) <- sapply(rownames(log), function(i) ukbnames[[i]])
   }
@@ -119,20 +169,21 @@ if (rule == "collapse_bfile_summary") {
   par(mfrow = c(2, 2))
   emax <- max(cbind(epochs.h[1:6,], epochs.f[1:6,])) + 2
   ymin <- min(cbind(mev.h[1:6,], mev.f[1:6,]))
-  barplot(epochs.f[1:6, ], beside = T, ylim = c(0, emax), col = factor(rownames(mev.f)[1:6]), ylab = "Epochs", cex.axis = 1.2, cex.lab = 1.2, names.arg = paste0("K=", colnames(epochs.f)), main = "PCAone")
+  barplot(epochs.f[1:6, ], beside = T, ylim = c(0, emax), col = factor(rownames(mev.f)[1:6]), ylab = "Epochs", cex.axis = 1.2, cex.lab = 1.2, names.arg = paste0("K=", colnames(epochs.f)), main = expression("PCAone"), cex.main = 2)
   plot_mev_byk(mev.f[1:6, ], ymin)
-  barplot(epochs.h[1:6, ], beside = T, ylim = c(0, emax), col = factor(rownames(mev.h)[1:6]), ylab = "Epochs", cex.axis = 1.2, cex.lab = 1.2, names.arg = paste0("K=", colnames(epochs.h)), main = "PCAone_H+Y")
-  plot_mev_byk(mev.h[1:6, ], ymin)
+
+  barplot(epochs.h[1:6, ], beside = T, ylim = c(0, emax), col = factor(rownames(mev.h)[1:6]), ylab = "Epochs", cex.axis = 1.2, cex.lab = 1.2, names.arg = paste0("K=", colnames(epochs.h)), main = expression("PCAone"[H+Y]), cex.main = 2)
+  plot_mev_byk(mev.h[1:6, ], ymin, legend = FALSE)
   dev.off()
 
   pdf(snakemake@output[["pdf2"]], w = 12, h = 9)
   par(mfrow = c(2, 2))
   emax <- max(cbind(epochs.h[1:6+6,], epochs.f[1:6+6,])) + 2
   ymin <- min(cbind(mev.h[1:6+6,], mev.f[1:6+6,]))
-  barplot(epochs.f[1:6+6, ], beside = T, ylim = c(0, emax), col = factor(rownames(mev.f)[1:6+6]), ylab = "Epochs", cex.axis = 1.2, cex.lab = 1.2, names.arg = paste0("K=", colnames(epochs.f)), main = "PCAone")
+  barplot(epochs.f[1:6+6, ], beside = T, ylim = c(0, emax), col = factor(rownames(mev.f)[1:6+6]), ylab = "Epochs", cex.axis = 1.2, cex.lab = 1.2, names.arg = paste0("K=", colnames(epochs.f)), main = expression("PCAone"), cex.main = 2)
   plot_mev_byk(mev.f[1:6+6, ], ymin)
-  barplot(epochs.h[1:6+6, ], beside = T, ylim = c(0, emax), col = factor(rownames(mev.h)[1:6+6]), ylab = "Epochs", cex.axis = 1.2, cex.lab = 1.2, names.arg = paste0("K=", colnames(epochs.h)), main = "PCAone_H+Y")
-  plot_mev_byk(mev.h[1:6+6, ], ymin)
+  barplot(epochs.h[1:6+6, ], beside = T, ylim = c(0, emax), col = factor(rownames(mev.h)[1:6+6]), ylab = "Epochs", cex.axis = 1.2, cex.lab = 1.2, names.arg = paste0("K=", colnames(epochs.h)), main = expression("PCAone"[H+Y]), cex.main = 2)
+  plot_mev_byk(mev.h[1:6+6, ], ymin, legend = FALSE)
   dev.off()
 }
 
@@ -141,8 +192,10 @@ if (rule == "collect_bfile_summary") {
   names(log) <- snakemake@params[["data"]]
   acc <- lapply(snakemake@input[["acc"]], readRDS)
   names(acc) <- snakemake@params[["data"]]
+  eigvals <- snakemake@input[["val"]]
+  names(eigvals) <- snakemake@params[["data"]]
 
-  res <- list(log = log, acc = acc)
+  res <- list(log = log, acc = acc,eigvals = eigvals)
 
   saveRDS(res, snakemake@output[["rds"]])
 

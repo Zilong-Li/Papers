@@ -14,6 +14,7 @@ valid_scenarios = [
     "suppl_bgen",
     "suppl_bfile",
     "suppl_ukb",
+    "suppl_meta",
     "test_ukb",
     "test_scrnas",
     "stop_criteria",
@@ -76,6 +77,14 @@ def get_all_results():
         return get_stop_criteira()
     elif scenario == "suppl_mev_ci":
         return get_suppl_mev_ci()
+    elif scenario == "suppl_meta":
+        return (
+            expand(
+                rules.collapse_csv_summary.output,
+                data=DATASETS,
+            ),
+            expand(rules.make_csv_pca_plot.output, data=DATASETS),
+        )
     elif scenario in ["suppl_bfile", "suppl_ukb"]:
         return rules.collapse_bfile_summary.output
     else:
@@ -631,11 +640,12 @@ rule run_bgen_pcaone_alg2:
         """
 
 
-rule run_scrnas_pcaone_arnoldi:
+rule run_csv_pcaone_arnoldi:
     output:
-        vec=os.path.join(OUTDIR, "scrnas", "{data}", "pcaone.a.k{k}.eigvecs"),
+        vec=os.path.join(OUTDIR, "{data}", "pcaone.a.k{k}.csv.eigvecs"),
+        val=os.path.join(OUTDIR, "{data}", "pcaone.a.k{k}.csv.eigvals"),
     log:
-        os.path.join(OUTDIR, "scrnas", "{data}", "pcaone.a.k{k}.llog"),
+        os.path.join(OUTDIR, "{data}", "pcaone.a.k{k}.csv.llog"),
     params:
         csv=lambda wildcards: config[wildcards.data]["csv"],
         out=lambda wildcards, output: output[0][:-8],
@@ -646,15 +656,15 @@ rule run_scrnas_pcaone_arnoldi:
         export MKL_NUM_THREADS={threads}
         export NUMEXPR_NUM_THREADS={threads}
         export OMP_NUM_THREADS={threads}
-        {TIME} -v {PCAONE} --csv {params.csv} -k {wildcards.k} --cpmed -n {threads} -o {params.out} --verbose {params.pcaonea} &> {log}
+        {TIME} -v {PCAONE} --csv {params.csv} -k {wildcards.k} -n {threads} -o {params.out} --verbose {params.pcaonea} &> {log}
         """
 
 
-rule run_scrnas_pcaone_alg1:
+rule run_csv_pcaone_alg1:
     output:
-        vec=os.path.join(OUTDIR, "scrnas", "{data}", "pcaone.h.k{k}.eigvecs"),
+        vec=os.path.join(OUTDIR, "{data}", "pcaone.h.k{k}.csv.eigvecs"),
     log:
-        os.path.join(OUTDIR, "scrnas", "{data}", "pcaone.h.k{k}.llog"),
+        os.path.join(OUTDIR, "{data}", "pcaone.h.k{k}.csv.llog"),
     params:
         csv=lambda wildcards: config[wildcards.data]["csv"],
         out=lambda wildcards, output: output[0][:-8],
@@ -665,15 +675,15 @@ rule run_scrnas_pcaone_alg1:
         export MKL_NUM_THREADS={threads}
         export NUMEXPR_NUM_THREADS={threads}
         export OMP_NUM_THREADS={threads}
-        {TIME} -v {PCAONE} --csv {params.csv} -k {wildcards.k} --cpmed -n {threads} -o {params.out} --verbose {params.pcaoneh} &> {log}
+        {TIME} -v {PCAONE} --csv {params.csv} -k {wildcards.k} -n {threads} -o {params.out} --verbose {params.pcaoneh} &> {log}
         """
 
 
-rule run_scrnas_pcaone_alg2:
+rule run_csv_pcaone_alg2:
     output:
-        vec=os.path.join(OUTDIR, "scrnas", "{data}", "pcaone.f.w{w}.k{k}.eigvecs"),
+        vec=os.path.join(OUTDIR, "{data}", "pcaone.f.w{w}.k{k}.csv.eigvecs"),
     log:
-        os.path.join(OUTDIR, "scrnas", "{data}", "pcaone.f.w{w}.k{k}.llog"),
+        os.path.join(OUTDIR, "{data}", "pcaone.f.w{w}.k{k}.csv.llog"),
     params:
         csv=lambda wildcards: config[wildcards.data]["csv"],
         out=lambda wildcards, output: output[0][:-8],
@@ -684,7 +694,7 @@ rule run_scrnas_pcaone_alg2:
         export MKL_NUM_THREADS={threads}
         export NUMEXPR_NUM_THREADS={threads}
         export OMP_NUM_THREADS={threads}
-        {TIME} -v {PCAONE} --csv {params.csv} -k {wildcards.k} --cpmed -w {wildcards.w} --no-shuffle -n {threads} -o {params.out} --verbose {params.pcaonef} &> {log}
+        {TIME} -v {PCAONE} --csv {params.csv} -k {wildcards.k} -w {wildcards.w} -n {threads} -o {params.out} --verbose {params.pcaonef} &> {log}
         """
 
 
@@ -698,7 +708,7 @@ rule run_scrnas_online_sumr:
             "Feature_LogCPMEDMeans.csv",
         ),
     log:
-        os.path.join(OUTDIR, "scrnas", "{data}", "sumr", "summary.llog"),
+        os.path.join(OUTDIR, "{data}", "sumr", "summary.llog"),
     params:
         zst=lambda wildcards: config[wildcards.data]["bin"],
         outdir=lambda wildcards, output: os.path.dirname(output[0]),
@@ -727,7 +737,7 @@ rule run_scrnas_online_halko:
             "Eigen_vectors.csv",
         ),
     log:
-        os.path.join(OUTDIR, "scrnas", "{data}", "onlinepca.halko.k{k}.niter3", "llog"),
+        os.path.join(OUTDIR, "{data}", "onlinepca.halko.k{k}.niter3", "llog"),
     params:
         zst=lambda wildcards: config[wildcards.data]["bin"],
         outdir=lambda wildcards, output: os.path.dirname(output[0]),

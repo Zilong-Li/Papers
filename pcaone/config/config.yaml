@@ -135,9 +135,23 @@ suppl_rnaseq:
   propca: "-vn -cl 0.001 -a"
   flashpca: "--verbose --memory 40000"
 
+suppl_meta:
+  dataset: ["metahit", "metahit_rmdup"]
+  label: ""
+  pcs: [5, 10, 20, 30, 40, 100, 200]
+  threads: 10
+  # pcaone options
+  windows: [64]
+  pcaonef: "--scale 1 --svd 0 --memory 2 --maxp 40"
+  pcaoneh: "--scale 1 --svd 1 --memory 2 --maxp 40"
+  pcaonea: "--scale 1 --svd 3"
+  # other program options
+  terapca: "-filewrite 1 -print 2 -memory 2"
+  propca: "-vn -cl 0.001 -a"
+  flashpca: "--verbose --memory 40000"
+
 suppl_bfile:
-  # dataset: ["1000G_nsnps1000k", "1000G_nsnps250k", "1000G_nsnps500k"]
-  dataset: ["1000G_nsnps100k", "1000G_nsnps250k", "1000G_nsnps500k", "1000G_nsnps1000k", "1000G_nsnps2000k", "1000G_nsnps3000k", "ukb_array_nsamples1k", "ukb_array_nsamples5k", "ukb_array_nsamples10k", "ukb_array_nsamples20k", "ukb_array_nsamples100k", "ukb_array_nsamples200k"]
+  dataset: ["1000G_nsnps200k", "1000G_nsnps400k", "1000G_nsnps600k", "1000G_nsnps800k", "1000G_nsnps1000k", "1000G_nsnps2000k", "ukb_array_nsamples10k", "ukb_array_nsamples20k", "ukb_array_nsamples40k", "ukb_array_nsamples60k", "ukb_array_nsamples80k","ukb_array_nsamples100k"]
   label: ""
   pcs: [10, 20, 30, 40, 100]
   threads: 10
@@ -154,7 +168,7 @@ suppl_bfile:
 suppl_mev_ci:
   dataset: ["asianS1", "asianS2", "asianS3", "asianS4", "asianS5", "asianS6", "asianS7", "asianS8", "asianS9", "asianS10"]
   label: ""
-  pcs: [10]
+  pcs: [2,5,10,20,30,40]
   threads: 10
   # pcaone options
   windows: [64]
@@ -293,35 +307,30 @@ asianS10:
   bim: data/1000G/all.2504.bim
   fam: data/1000G/all.2504.fam
 
-1000G_nsnps5k:
-  bed: data/1000G_subs/nsnps.5000.bed
-  bim: data/1000G_subs/nsnps.5000.bim
-  fam: data/1000G_subs/nsnps.5000.fam
-
-1000G_nsnps10k:
-  bed: data/1000G_subs/nsnps.10000.bed
-  bim: data/1000G_subs/nsnps.10000.bim
-  fam: data/1000G_subs/nsnps.10000.fam
-
-1000G_nsnps50k:
-  bed: data/1000G_subs/nsnps.50000.bed
-  bim: data/1000G_subs/nsnps.50000.bim
-  fam: data/1000G_subs/nsnps.50000.fam
-
 1000G_nsnps100k:
   bed: data/1000G_subs/nsnps.100000.bed
   bim: data/1000G_subs/nsnps.100000.bim
   fam: data/1000G_subs/nsnps.100000.fam
 
-1000G_nsnps250k:
-  bed: data/1000G_subs/nsnps.250000.bed
-  bim: data/1000G_subs/nsnps.250000.bim
-  fam: data/1000G_subs/nsnps.250000.fam
+1000G_nsnps200k:
+  bed: data/1000G_subs/nsnps.200000.bed
+  bim: data/1000G_subs/nsnps.200000.bim
+  fam: data/1000G_subs/nsnps.200000.fam
 
-1000G_nsnps500k:
-  bed: data/1000G_subs/nsnps.500000.bed
-  bim: data/1000G_subs/nsnps.500000.bim
-  fam: data/1000G_subs/nsnps.500000.fam
+1000G_nsnps400k:
+  bed: data/1000G_subs/nsnps.400000.bed
+  bim: data/1000G_subs/nsnps.400000.bim
+  fam: data/1000G_subs/nsnps.400000.fam
+
+1000G_nsnps600k:
+  bed: data/1000G_subs/nsnps.600000.bed
+  bim: data/1000G_subs/nsnps.600000.bim
+  fam: data/1000G_subs/nsnps.600000.fam
+
+1000G_nsnps800k:
+  bed: data/1000G_subs/nsnps.800000.bed
+  bim: data/1000G_subs/nsnps.800000.bim
+  fam: data/1000G_subs/nsnps.800000.fam
 
 1000G_nsnps1000k:
   bed: data/1000G_subs/nsnps.1000000.bed
@@ -349,20 +358,10 @@ ukb:
   fam: data/ukb/merge.maf0.05.fam
 
 ukb_array:
-  bed: data/ukb_array/ukb_snp_chip.bgen.vars.bed
-  bim: data/ukb_array/ukb_snp_chip.bgen.vars.bim
-  fam: data/ukb_array/ukb_snp_chip.bgen.vars.fam
+  bed: data/ukb_array/ukb_snp_chip_in_phasing.bed
+  bim: data/ukb_array/ukb_snp_chip_in_phasing.bim
+  fam: data/ukb_array/ukb_snp_chip_in_phasing.fam
   bgen: data/ukb_array/perm.chip.concat.ld.qc.bgen
-
-ukb_array_nsamples1k:
-  bed: data/ukb_array_subs/nsamples.1000.bed
-  bim: data/ukb_array_subs/nsamples.1000.bim
-  fam: data/ukb_array_subs/nsamples.1000.fam
-
-ukb_array_nsamples5k:
-  bed: data/ukb_array_subs/nsamples.5000.bed
-  bim: data/ukb_array_subs/nsamples.5000.bim
-  fam: data/ukb_array_subs/nsamples.5000.fam
 
 ukb_array_nsamples10k:
   bed: data/ukb_array_subs/nsamples.10000.bed
@@ -373,6 +372,21 @@ ukb_array_nsamples20k:
   bed: data/ukb_array_subs/nsamples.20000.bed
   bim: data/ukb_array_subs/nsamples.20000.bim
   fam: data/ukb_array_subs/nsamples.20000.fam
+
+ukb_array_nsamples40k:
+  bed: data/ukb_array_subs/nsamples.40000.bed
+  bim: data/ukb_array_subs/nsamples.40000.bim
+  fam: data/ukb_array_subs/nsamples.40000.fam
+
+ukb_array_nsamples60k:
+  bed: data/ukb_array_subs/nsamples.60000.bed
+  bim: data/ukb_array_subs/nsamples.60000.bim
+  fam: data/ukb_array_subs/nsamples.60000.fam
+
+ukb_array_nsamples80k:
+  bed: data/ukb_array_subs/nsamples.80000.bed
+  bim: data/ukb_array_subs/nsamples.80000.bim
+  fam: data/ukb_array_subs/nsamples.80000.fam
 
 ukb_array_nsamples100k:
   bed: data/ukb_array_subs/nsamples.100000.bed
@@ -458,6 +472,12 @@ datas13:
   bed: data/bySnps/nsnps.3000000.bed
   bim: data/bySnps/nsnps.3000000.bim
   fam: data/bySnps/nsnps.3000000.fam
+
+metahit:
+  csv: data/metagenome/metahit.depth.csv.zst
+
+metahit_rmdup:
+  csv: data/metagenome/metahit.depth.rmdup.csv.zst
 
 gtex_rnaseq:
   binary: data/gtex/gtex_rnaseq_gene_tpm.perm.bin

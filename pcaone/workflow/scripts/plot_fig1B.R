@@ -47,7 +47,7 @@ plot_pca_asia <- function(x, y, p, m, bs = 1, ...) {
 data <- snakemake@wildcards[["data"]]
 pops <- read.table(snakemake@config[[data]]$fam, header = F)[, 1:2]
 coljco <- c("#0073C2FF", "#EFC000FF", "#868686FF", "#CD534CFF", "#7AA6DCFF", "#003C67FF", "#8F7700FF", "#3B3B3BFF", "#A73030FF", "#4A6990FF")
-if (length(unique(pops[, 1])) > 10) {
+if (length(unique(pops[, 1])) > 4) {
   coljco <- palette(colorAnd("large"))
 }
 pctruth <- function() {

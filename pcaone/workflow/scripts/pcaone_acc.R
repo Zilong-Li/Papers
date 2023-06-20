@@ -2,9 +2,10 @@
 snakemake@source("common.R")
 
 windows <- snakemake@params[["windows"]]
+K <- snakemake@wildcards[["k"]]
 
 ## truth <- as.matrix(fread(snakemake@input[["plink1"]])[, -c(1,2)])
-truth = as.matrix(fread(snakemake@input[["pcaonea"]]))
+truth = as.matrix(fread(snakemake@input[["pcaonea"]]))[,1:K]
 
 pcaone.h = as.matrix(fread(snakemake@input[["pcaoneh"]]))
 ## pcaone.f = as.matrix(fread(snakemake@input[["pcaonef"]]))

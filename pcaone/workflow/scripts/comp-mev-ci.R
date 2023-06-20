@@ -1,6 +1,6 @@
 snakemake@source("common.R")
 
-source("workflow/scripts/common.R")
+## source("workflow/scripts/common.R")
 
 rule <- snakemake@rule
 
@@ -38,12 +38,13 @@ if(rule == "collapse_mev_ci") {
   res <- lapply(snakemake@input[["rds"]], readRDS)
 
   prog <- rownames(res[[1]])
+  K <- snakemake@wildcards[["k"]]
 
   d <- sapply(res, "[[", "MEV")
   ## d <- sapply(res, "[[", "minSSE")
 
   pdf(paste0(snakemake@output[["rds"]], ".pdf"), w = 9, h = 6)
-  boxplot(t(d), names = fancyname2(prog), ylab = "MEV(K=10)", main = "10 random subsets of Asian data with 1 millions SNPs")
+  boxplot(t(d), names = fancyname2(prog), col = as.character(PROGS["col", prog]), ylab = paste0("MEV(K=",K,")"), main = "10 random subsets of Asian data with 1 millions SNPs")
   dev.off()
 
   saveRDS(snakemake, snakemake@output[["rds"]])
