@@ -40,8 +40,8 @@ l.pc <- list(
 
 plot_pca_asia <- function(x, y, p, m, bs = 1, ...) {
   par(oma = rep(0, 4), mar = c(bs, 1, 1, 0.5), mgp = c(0, 0, 0), xaxt = "n", yaxt = "n")
-  plot(x, y, bty = "l", col = p, pch = 19, ylab = "PC2", cex = 0.8, ...)
-  mtext(m, side = 3, line = -0.3, font = 2)
+  plot(x, y, bty = "l", col = p, pch = 19, ylab = "PC2", cex.lab = 1.5, cex = 0.8, ...)
+  mtext(m, side = 3, line = -0.3, font = 2, cex = 1.5)
 }
 
 data <- snakemake@wildcards[["data"]]
@@ -52,7 +52,7 @@ if (length(unique(pops[, 1])) > 4) {
 }
 pctruth <- function() {
   plot_pca_asia(truth[, 1], truth[, 2], coljco[as.numeric(factor(pops[, 1]))], "Full SVD", bs = 0.1, xlab = "")
-  legend("topleft", legend = sort(unique(pops[, 1])), col = coljco[as.numeric(factor(sort(unique(pops[, 1]))))], pch = 19, bty = "n", cex = 0.8, y.intersp = 0.8, inset = c(0, -0.03))
+  legend("topleft", legend = sort(unique(pops[, 1])), col = coljco[as.numeric(factor(sort(unique(pops[, 1]))))], pch = 19, bty = "n", cex = 1.0, y.intersp = 0.8, inset = c(0, -0.03))
 }
 pcpcaone <- function() {
   plot_pca_asia(l.pc$pcaone.f[, 1], l.pc$pcaone.f[, 2], coljco[as.numeric(factor(pops[, 1]))], "PCAone", bs = 0.1, xlab = "")
@@ -75,7 +75,7 @@ pcterapca <- function() {
 a0 <- function() {
   par(mar = c(0, 0, 0, 0))
   plot(0, 0, col = "transparent", axes = F, xlab = "", ylab = "")
-  text(0, 0, "Two estimated PCs (K=2)", font = 1, cex = 1.3)
+  text(0, 0, "Two estimated PCs (K=2)", font = 1, cex = 2.0)
 }
 
 pdf(snakemake@output[["pdf"]], h = 8, w = 6)

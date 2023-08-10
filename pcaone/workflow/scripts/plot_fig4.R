@@ -1,16 +1,19 @@
 library(cowplot)
 library(ggplot2)
+library(data.table)
+library(caTools)
 
 Sys.setenv(DISPLAY = "localhost:15.0" )
 barplot(1:10)
 
 palette(c("#FB8072","#80B1D3","#FDB462","#B3DE69","#FCCDE5","#BEBADA","#FFED6F","#8DD3C7"))
-df = data.table::fread("/emc/zilong/pcaone/manuscript/ukb/all.unrelated.h.manh", h=F, data.table=F)
+## df = data.table::fread("/emc/zilong/pcaone/manuscript/ukb/all.unrelated.h.manh", h=F, data.table=F)
+df = data.table::fread("/maps/projects/alab/scratch/zilong/emc/pcaone/manuscript/ukb/all.unrelated.h.manh", h=F, data.table=F)
 npc <- dim(df)[2] - 3
 colnames(df) <- c("chr", "snp", "bp", paste0("pc", 1:npc))
 chrtable <- table(df$chr)
 window <- 1000
-mat <- apply(df[,-(1:3)], 2, function(x ) abs(runmax(x,  k = window )))
+mat <- apply(df[,-(1:3)], 2, function(x ) abs(caTools::runmax(x,  k = window )))
 groups <- list("Population structure" = c(1, 2, 4),
             "Centromere" = c(3, 5, 8, 9, 10, 11, 13, 14, 19, 20, 22, 29, 32, 34, 35, 37),
             "HLA" =  c(6, 12, 15, 16, 27, 30, 38),
@@ -32,7 +35,6 @@ plotLoadings <- function(window = 1000, anno = c(1, 2, 4 )) {
     ymax <- c(0, max(mat)) * 1.05
     nchr <- length(chrtable)
     par(mar = c(3.5, 3.5, 4, 1), mgp = c(2, 0.6, 0))
-
     plot(1:nrow(mat), mat[,1], type = 'l', col = "gray60", lwd = 2, cex.main = 1.5, cex.axis = 1.5, cex.lab = 1.5,  ylim = ymax, axes = F, xlab = "Chromosomes", ylab = "SNP loadings", main = "Top 40 PC loadings of 339,582 individuals and 3,841,676 SNPs\n( Cost: 5 hours 44 mins, 6GB, 20 threads )")
     axis(2, cex.lab = 1.5, cex.axis = 1.5)
     ## text(cumsum(as.vector(chrtable)) - chrtable/2, rep(-0.001,22), 1:22, pch = "|", xpd = T, ...)
@@ -53,7 +55,6 @@ plotLoadings <- function(window = 1000, anno = c(1, 2, 4 )) {
             text(w[i], mat[w[i], i], i)
         }
     }
-
 }
 
 png("ukb-loadings.png", height = 9, width = 18, res = 300, units = "in" )
