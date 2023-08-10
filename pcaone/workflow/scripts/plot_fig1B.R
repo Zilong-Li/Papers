@@ -39,7 +39,7 @@ l.pc <- list(
 )
 
 plot_pca_asia <- function(x, y, p, m, bs = 1, ...) {
-  par(oma = rep(0, 4), mar = c(bs, 1, 1, 0.5), mgp = c(0, 0, 0), xaxt = "n", yaxt = "n")
+  par(oma = rep(0, 4), mar = c(bs, 1.5, 1, 0.5), mgp = c(0, 0, 0), xaxt = "n", yaxt = "n")
   plot(x, y, bty = "l", col = p, pch = 19, ylab = "PC2", cex.lab = 1.5, cex = 0.8, ...)
   mtext(m, side = 3, line = -0.3, font = 2, cex = 1.5)
 }
@@ -67,10 +67,10 @@ pcplink2 <- function() {
   plot_pca_asia(l.pc$plink2[, 1], l.pc$plink2[, 2], coljco[as.numeric(factor(pops[, 1]))], "Plink2", bs = 0.1, xlab = "")
 }
 pcpropca <- function() {
-  plot_pca_asia(l.pc$propca[, 1], l.pc$propca[, 2], coljco[as.numeric(factor(pops[, 1]))], "ProPCA", xlab = "PC1")
+  plot_pca_asia(l.pc$propca[, 1], l.pc$propca[, 2], coljco[as.numeric(factor(pops[, 1]))], "ProPCA", bs = 1.5, xlab = "PC1")
 }
 pcterapca <- function() {
-  plot_pca_asia(l.pc$terapca[, 1], l.pc$terapca[, 2], coljco[as.numeric(factor(pops[, 1]))], "TeraPCA", xlab = "PC1")
+  plot_pca_asia(l.pc$terapca[, 1], l.pc$terapca[, 2], coljco[as.numeric(factor(pops[, 1]))], "TeraPCA", bs = 1.5, xlab = "PC1")
 }
 a0 <- function() {
   par(mar = c(0, 0, 0, 0))

@@ -128,7 +128,7 @@ colnames(m.ram) <- KK
 
 plotacc <- function(mat, xlabels, mapprog, ...) {
   par(mar = c(3.5, 3.5, 2, 1), mgp = c(2, 0.6, 0))
-  plot(1, bty = "l", type = "n", xaxt = "n", col = "transparent", cex.main = 2.0, cex.axis = 1.2, cex.lab = 1.2, xlim = c(1, nrow(mat)), ...)
+  plot(1, bty = "l", type = "n", xaxt = "n", col = "transparent", cex.main = 2.0, cex.axis = 1.2, cex.lab = 1.3, xlim = c(1, nrow(mat)), ...)
   for (n in colnames(mat)) {
     points(mat[, n], type = "b", col = mapprog["col", n], lwd = 2)
   }
@@ -137,7 +137,7 @@ plotacc <- function(mat, xlabels, mapprog, ...) {
 
 plotacc2 <- function(h, f, ...) {
   par(mar = c(3.5, 3.5, 2, 1), mgp = c(2, 0.6, 0))
-  plot(1, bty = "l", type = "n", xaxt = "n", col = "transparent", cex.main = 2.0, cex.axis = 1.2, cex.lab = 1.2, xlim = c(1, length(h)), ...)
+  plot(1, bty = "l", type = "n", xaxt = "n", col = "transparent", cex.main = 2.0, cex.axis = 1.2, cex.lab = 1.5, xlim = c(1, length(h)), ...)
   abline(h = 1, col = "gray", lwd = 2, lty = 2)
   points(h, type = "b", col = PROGS["col", "pcaone.h"], lwd = 2)
   points(f, type = "b", col = PROGS["col", "pcaone.f"], lwd = 2)
