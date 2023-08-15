@@ -7,11 +7,16 @@ Sys.setenv(DISPLAY = "localhost:15.0" )
 barplot(1:10)
 
 palette(c("#FB8072","#80B1D3","#FDB462","#B3DE69","#FCCDE5","#BEBADA","#FFED6F","#8DD3C7"))
-## df = data.table::fread("/emc/zilong/pcaone/manuscript/ukb/all.unrelated.h.manh", h=F, data.table=F)
-df = data.table::fread("/maps/projects/alab/scratch/zilong/emc/pcaone/manuscript/ukb/all.unrelated.h.manh", h=F, data.table=F)
-npc <- dim(df)[2] - 3
+
+df = data.table::fread("/maps/projects/alab/people/rlk420/pcaone/data/ukb/pcaone.f.loadings", h=F, data.table=F)
+npc <- ncol(df)
+bim <- fread("/maps/projects/alab/people/rlk420/pcaone/data/ukb/merge.maf0.05.bim", h = F, data.table = F)
+bim <- bim[, c(1, 2, 4)]
+stopifnot(nrow(bim) == nrow(df))
+df <- cbind(bim, df)
 colnames(df) <- c("chr", "snp", "bp", paste0("pc", 1:npc))
 chrtable <- table(df$chr)
+
 window <- 1000
 mat <- apply(df[,-(1:3)], 2, function(x ) abs(caTools::runmax(x,  k = window )))
 groups <- list("Population structure" = c(1, 2, 4),
@@ -75,8 +80,8 @@ plotlocus <- function(){
     rsqplus <- 0.045
     rightylabxplus <- 0.05
     xmargin <- 0.005
-    cexaxis <- 1.2
-    cexlab <- 1.2
+    cexaxis <- 1.35
+    cexlab <- 1.5
     blue <- "dodgerblue4"
 
     pval[is.na(pval)] <- 1
@@ -105,7 +110,7 @@ plotlocus <- function(){
     } else {
       ylim <- c(0, max(pval)*1.05)
     }
-    plot(pos / 1e6, pval, col = "black", bg = bgcols, xaxs = "i", xlim = c(min.pos - adj, max.pos + adj), xaxt = "n", xlab = "", ylab = "", ylim = ylim, pch = 21, cex = 2, las = 1, cex.axis = cexaxis, main = main)
+    plot(pos / 1e6, pval, col = "black", bg = bgcols, xaxs = "i", xlim = c(min.pos - adj, max.pos + adj), xaxt = "n", xlab = "", ylab = "", ylim = ylim, pch = 21, cex = 2, las = 1, cex.axis = cexaxis, main = main, cex.lab = 1.5)
     ## axis(2, ylim = c(0, 15), col = "black", label = FALSE, cex.axis = cexaxis)
     ## mtext(2, text = expression(paste("-l", og[10], "[", italic(P), "]")), line = 3, cex = cexlab)
     mtext(2, text = "SNP Loadings of PC1", line = 4, cex = cexlab)
@@ -134,8 +139,8 @@ plotlocus <- function(){
     ## par(mar = c(5.2, 6.2, -0.1, 6.3) + 0.1)
     par(mar = c(4, 5.5, 1, 1))
 
-    plot(c(0, 0), c(0, 0), type = "n", xlim = c(min.pos - adj, max.pos + adj), ylim = c(-0.8, 0.1), xlab = "", xaxs = "i", yaxt = "n", ylab = "", main = "", cex.lab = 2., cex.axis = cexaxis, tck = -0.02)
-    mtext(1, text = paste("Position on chromosome ", chr, " (Mb)", sep = ""), line = 2.5, cex = cexlab)
+    plot(c(0, 0), c(0, 0), type = "n", xlim = c(min.pos - adj, max.pos + adj), ylim = c(-0.8, 0.1), xlab = "", xaxs = "i", yaxt = "n", ylab = "", main = "", cex.lab = 2.5, cex.axis = cexaxis, tck = -0.02)
+    mtext(1, text = paste("Position on Chromosome ", chr, " (Mb)", sep = ""), line = 2.5, cex = cexlab)
 
     ord <- order(start)
     start <- start[ord]
@@ -189,8 +194,8 @@ dd <- do[ord, ]
 
 
 bigpal=c("#1B9E77","#FF7F00","#7570B3","#E7298A","#66A61E","#E6AB02","#A6761D","gray60","#8DD3C7","#FFFFB3","#BEBADA","#FB8072")
-p1 <- ggplot(dd, aes(PC1, PC2, colour=ethnic)) + theme_classic() + geom_point(alpha = 0.8)+scale_color_manual(values=bigpal)+theme(legend.position="none", axis.text = element_text(size = 14), axis.title = element_text(size = 16))+labs(x="PC1", y="PC2") + ggtitle("")
-p2 <- ggplot(dd, aes(PC1, PC4, colour=ethnic)) + theme_classic() + geom_point(alpha = 0.8)+scale_color_manual(values=bigpal)+theme(legend.position="right", legend.title.align = 0.1, legend.text = element_text(size = 20), legend.title = element_text(size = 26), axis.text = element_text(size = 14), axis.title = element_text(size = 16))+labs(x="PC1", y="PC4", colour="") + ggtitle("") + guides(color = guide_legend(override.aes = list(size = 5) ))
+p1 <- ggplot(dd, aes(PC1, PC2, colour=ethnic)) + theme_classic() + geom_point(alpha = 0.8)+scale_color_manual(values=bigpal)+theme(legend.position="none", axis.text = element_text(size = 18), axis.title = element_text(size = 20))+labs(x="PC1", y="PC2") + ggtitle("")
+p2 <- ggplot(dd, aes(PC1, PC4, colour=ethnic)) + theme_classic() + geom_point(alpha = 0.8)+scale_color_manual(values=bigpal)+theme(legend.position="right", legend.title.align = 0.1, legend.text = element_text(size = 20), legend.title = element_text(size = 26), axis.text = element_text(size = 18), axis.title = element_text(size = 20))+labs(x="PC1", y="PC4", colour="") + ggtitle("") + guides(color = guide_legend(override.aes = list(size = 5)))
 
 ## plot_grid(p1, p2)
 

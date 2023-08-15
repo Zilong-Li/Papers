@@ -39,7 +39,7 @@ l.pc <- list(
 )
 
 plot_pca_asia <- function(x, y, p, m, bs = 1, ...) {
-  par(oma = rep(0, 4), mar = c(bs, 1.5, 1, 0.5), mgp = c(0, 0, 0), xaxt = "n", yaxt = "n")
+  par(oma = c(0, 0, 0, 0), mar = c(bs, 1.5, 1, 0.5), mgp = c(0, 0, 0), xaxt = "n", yaxt = "n")
   plot(x, y, bty = "l", col = p, pch = 19, ylab = "PC2", cex.lab = 1.5, cex = 0.8, ...)
   mtext(m, side = 3, line = -0.3, font = 2, cex = 1.5)
 }
@@ -67,10 +67,10 @@ pcplink2 <- function() {
   plot_pca_asia(l.pc$plink2[, 1], l.pc$plink2[, 2], coljco[as.numeric(factor(pops[, 1]))], "Plink2", bs = 0.1, xlab = "")
 }
 pcpropca <- function() {
-  plot_pca_asia(l.pc$propca[, 1], l.pc$propca[, 2], coljco[as.numeric(factor(pops[, 1]))], "ProPCA", bs = 1.5, xlab = "PC1")
+  plot_pca_asia(l.pc$propca[, 1], l.pc$propca[, 2], coljco[as.numeric(factor(pops[, 1]))], "ProPCA", bs = 1.1, xlab = "PC1")
 }
 pcterapca <- function() {
-  plot_pca_asia(l.pc$terapca[, 1], l.pc$terapca[, 2], coljco[as.numeric(factor(pops[, 1]))], "TeraPCA", bs = 1.5, xlab = "PC1")
+  plot_pca_asia(l.pc$terapca[, 1], l.pc$terapca[, 2], coljco[as.numeric(factor(pops[, 1]))], "TeraPCA", bs = 1.1, xlab = "PC1")
 }
 a0 <- function() {
   par(mar = c(0, 0, 0, 0))
@@ -81,6 +81,6 @@ a0 <- function() {
 pdf(snakemake@output[["pdf"]], h = 8, w = 6)
 w <- 0.32
 h <- 1 - 3 * w
-ggdraw() + draw_label("B", 0.0, 0.98, 0, 0, fontface = "bold") + draw_plot(a0, 0, 0, 1, h) + draw_plot(pcterapca, 0, h, 0.5, w) + draw_plot(pcpropca, 0.5, h, 0.5, w) + draw_plot(pcflashpca, 0, w + h, 0.5, w) + draw_plot(pcplink2, 0.5, w + h, 0.5, w) + draw_plot(pctruth, 0, 2 * w + h, 0.5, w) + draw_plot(pcpcaone, 0.5, 2 * w + h, 0.5, w)
+ggdraw() + draw_label("B", 0.0, 0.98, 0, 0, fontface = "bold", size = 16) + draw_plot(a0, 0, 0, 1, h) + draw_plot(pcterapca, 0, h, 0.5, w) + draw_plot(pcpropca, 0.5, h, 0.5, w) + draw_plot(pcflashpca, 0, w + h, 0.5, w) + draw_plot(pcplink2, 0.5, w + h, 0.5, w) + draw_plot(pctruth, 0, 2 * w + h, 0.5, w) + draw_plot(pcpcaone, 0.5, 2 * w + h, 0.5, w)
 ## ggdraw() + draw_label("B", 0.0, 0.98, 0, 0, fontface = "bold") + draw_plot(a0, 0, 0, 1, h) + draw_plot(pcterapca, 0, h, 0.5, w) + draw_plot(pcpropca, 0.5, h, 0.5, w) + draw_plot(pcflashpca, 0, w + h, 0.5, w) + draw_plot(pcfastpca, 0.5, w + h, 0.5, w) + draw_plot(pctruth, 0, 2 * w + h, 0.5, w) + draw_plot(pcpcaone, 0.5, 2 * w + h, 0.5, w)
 dev.off()

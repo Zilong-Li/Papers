@@ -128,7 +128,7 @@ colnames(m.ram) <- KK
 
 plotacc <- function(mat, xlabels, mapprog, ...) {
   par(mar = c(3.5, 3.5, 2, 1), mgp = c(2, 0.6, 0))
-  plot(1, bty = "l", type = "n", xaxt = "n", col = "transparent", cex.main = 2.0, cex.axis = 1.2, cex.lab = 1.3, xlim = c(1, nrow(mat)), ...)
+  plot(1, bty = "l", type = "n", xaxt = "n", col = "transparent", cex.main = 2.0, cex.axis = 1.2, cex.lab = 1.4, xlim = c(1, nrow(mat)), ...)
   for (n in colnames(mat)) {
     points(mat[, n], type = "b", col = mapprog["col", n], lwd = 2)
   }
@@ -137,7 +137,7 @@ plotacc <- function(mat, xlabels, mapprog, ...) {
 
 plotacc2 <- function(h, f, ...) {
   par(mar = c(3.5, 3.5, 2, 1), mgp = c(2, 0.6, 0))
-  plot(1, bty = "l", type = "n", xaxt = "n", col = "transparent", cex.main = 2.0, cex.axis = 1.2, cex.lab = 1.5, xlim = c(1, length(h)), ...)
+  plot(1, bty = "l", type = "n", xaxt = "n", col = "transparent", cex.main = 2.0, cex.axis = 1.2, cex.lab = 1.4, xlim = c(1, length(h)), ...)
   abline(h = 1, col = "gray", lwd = 2, lty = 2)
   points(h, type = "b", col = PROGS["col", "pcaone.h"], lwd = 2)
   points(f, type = "b", col = PROGS["col", "pcaone.f"], lwd = 2)
@@ -145,7 +145,7 @@ plotacc2 <- function(h, f, ...) {
 }
 
 figE <- function() {
-  plotacc2(C$pcaone.h, C$pcaone.f, ylim = c(0.2, 1.0), xlab = "Epochs", ylab = paste0("Accuracy (MEV) of K=",K," PCs"))
+  plotacc2(C$pcaone.h, C$pcaone.f, ylim = c(0.2, 1.0), xlab = "Epochs", ylab = paste0("Accuracy (MEV) of K=",K))
   legend("bottomright", legend = fancyname(c("pcaone.f", "pcaone.h")), col = as.character(PROGS["col", c("pcaone.f", "pcaone.h")]), pch = 21, lwd = 1.3, cex = 1.3, bty = "n")
 }
 
@@ -155,14 +155,14 @@ figD <- function() {
 
 figC <- function() {
   plotacc(t(m.ram), xlabels = KK, mapprog = PROGS, ylim = range(m.ram, na.rm = T), xlab = "Number of estimated PCs (K)", ylab = "Memory in Gigabytes")
-  legend("topleft", legend =  fancyname(progs), col = as.character(PROGS["col", progs]), pch = 21, lwd = 1.3, cex = 1.2, bty = "n", inset = c(0, -0.05))
+  legend("topleft", legend =  fancyname(progs), col = as.character(PROGS["col", progs]), pch = 21, lwd = 1.3, cex = 1.3, bty = "n", inset = c(0, -0.05))
 }
 
 figA <- function() {
   name <- colnames(epochs)
   epochs <- cbind("K" = KK, epochs)
   colnames(epochs) <- c(expression(bold("K(PCs)")) , fancyname(name, bold = T))
-  tt <- ttheme_default(colhead=list(fg_params = list(parse=TRUE)))
+  tt <- ttheme_default(core=list(fg_params = list(cex=1.3)), colhead=list(fg_params = list(parse=TRUE)))
   g <- tableGrob(epochs, rows = NULL, theme=tt)
   g$widths <- unit(rep(1 / ncol(g) * 0.95, ncol(g)), "npc")
   g <- gtable_add_grob(g,
@@ -179,7 +179,7 @@ figA <- function() {
 figAtitle <- function() {
   par(mar = c(0, 0, 0, 0))
   plot(0, 0, col = "transparent", axes = F, xlab = "", ylab = "")
-  text(0, 0, "Number of passes over data (epochs) of each method for top K PCs", font = 2, cex = 1.3)
+  text(0, 0, "Number of passes over data (epochs) of each method for top K PCs", font = 2, cex = 1.5)
 }
 
 ## ggdraw() + draw_plot(figC, 0, 0, 0.33, 0.65) + draw_plot(figD, 0.33, 0, 0.33, 0.65) + draw_plot(figE, 0.66, 0, 0.33, 0.65)+ draw_plot(figA(), 0, 0.61, 1, 0.35) + draw_plot(figAtitle, 0, 0.9, 1, 0.15) + draw_label("A", 0.01, 0.97, 0, 0, fontface = "bold") + draw_label("C", 0.01, 0.58, 0, 0, fontface = "bold") + draw_label("D", 0.34, 0.58, 0, 0, fontface = "bold")+ draw_label("E", 0.67, 0.58, 0, 0, fontface = "bold")
@@ -188,6 +188,6 @@ figAtitle <- function() {
 ## ggdraw() + draw_plot(figC, 0, 0, 0.5, 0.7) + draw_plot(figD, 0.5, 0, 0.5, 0.7) + draw_plot(figA(), 0, 0.65, 1, 0.35) + draw_plot(figAtitle, 0, 0.89, 1, 0.15) + draw_label("A", 0.01, 0.97, 0, 0, fontface = "bold") + draw_label("C", 0.01, 0.65, 0, 0, fontface = "bold") + draw_label("D", 0.51, 0.65, 0, 0, fontface = "bold")
 
 ## pdf("~/Downloads/t.pdf", h = 6, w = 12)
-pdf(snakemake@output[["pdf"]], h = 6, w = 12)
+pdf(snakemake@output[["pdf"]], h = 7, w = 12)
 ggdraw() + draw_plot(figC, 0, 0, 0.33, 0.65) + draw_plot(figD, 0.33, 0, 0.33, 0.65) + draw_plot(figE, 0.66, 0, 0.33, 0.65)+ draw_plot(figA(), 0, 0.61, 1, 0.35) + draw_plot(figAtitle, 0, 0.9, 1, 0.15) + draw_label("A", 0.01, 0.97, 0, 0, fontface = "bold") + draw_label("C", 0.01, 0.58, 0, 0, fontface = "bold") + draw_label("D", 0.34, 0.58, 0, 0, fontface = "bold")+ draw_label("E", 0.67, 0.58, 0, 0, fontface = "bold")
 dev.off()
