@@ -2,16 +2,8 @@
 rule bcftools_prepare_glvcf:
     input:
         bams=rules.bamlist.output,
-        sites=lambda wildcards: expand(
-            rules.concat_refpanel_sites_by_region2.output.sites,
-            size=config["refsize"],
-            allow_missing=True,
-        ),
-        tsv=lambda wildcards: expand(
-            rules.concat_refpanel_sites_by_region2.output.tsv,
-            size=config["refsize"],
-            allow_missing=True,
-        ),
+        sites=rules.get_pos_from_refpanel.output.sites,
+        tsv=rules.get_pos_from_refpanel.output.tsv,
     output:
         vcf=os.path.join(OUTDIR, "glvcf", "down{depth}x.{chrom}.bcf"),
         csi=os.path.join(OUTDIR, "glvcf", "down{depth}x.{chrom}.bcf.csi"),
