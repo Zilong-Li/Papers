@@ -1,0 +1,34 @@
+
+time: "/usr/bin/time"
+
+genome:
+  fasta: /maps/projects/alab/people/rlk420/datahub/ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/GRCh38_reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa
+  species: human
+  build: hg38
+  refpanel: config/refpanel.tsv
+  
+samples: config/samples.tsv
+
+coverage: [0.1, 2.0]
+
+chroms: ['chr20']
+
+threads: 20
+
+RUN: 'makesample'
+
+phaseless:
+  bin: "phaseless"
+  C: 10
+  iters: 100
+
+stitch:
+  method: 'diploid'
+  nGen: 100
+  buffer: 500000
+  K: 10
+  posfile: "config/posfile"
+
+beagle41:
+  version41: "/home/rlk420/.local/bin/beagle.27Jan18.7e1.jar"
+
