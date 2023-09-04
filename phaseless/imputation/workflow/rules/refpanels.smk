@@ -16,3 +16,15 @@ rule get_pos_from_refpanel:
         tabix -s1 -b2 -e2 {output.tsv} &> {log}
         """
 
+
+rule get_stitch_pos_file:
+    input:
+        rules.get_pos_from_refpanel.output.tsv,
+    output:
+        os.path.join(OUTDIR, "refpanel", "{chrom}.sites.posfile.txt"),
+    conda:
+        "../envs/pandas.yaml"
+    shell:
+        """
+        zcat {input} | tr ',' '\t' > {output}
+        """

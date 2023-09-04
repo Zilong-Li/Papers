@@ -14,6 +14,7 @@ include: "rules/genotype_likelihood.smk"
 include: "rules/beagle.smk"
 include: "rules/stitch.smk"
 include: "rules/phaseless.smk"
+include: "rules/accuracy.smk"
 
 
 rule all:

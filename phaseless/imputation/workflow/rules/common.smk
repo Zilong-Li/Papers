@@ -32,6 +32,8 @@ def get_all_results():
         return run_stitch()
     elif RUN == "phaseless":
         return run_phaseless()
+    elif RUN == "all":
+        return run_beagle(), run_stitch(), run_phaseless()
     else:
         raise RuntimeError("this is an invalid RUN!")
 

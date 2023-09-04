@@ -1,24 +1,19 @@
+OUTDIR_TRUTH = os.path.join(OUTDIR, "truth", "")
 
 rule collect_truth_gts:
     """would be better to use sites in subrefs"""
     input:
-        sites=lambda wildcards: expand(
-            rules.concat_refpanel_sites_by_region.output.sites,
-            size=config["refsize"],
-            allow_missing=True,
-        ),
+        sites=rules.get_pos_from_refpanel.output.sites,
     output:
         gt=os.path.join(OUTDIR_TRUTH, "truth.gts.{chrom}.txt"),
         af=os.path.join(OUTDIR_TRUTH, "af.input.panel.{chrom}.txt"),
         tmp=temp(os.path.join(OUTDIR_TRUTH, "af.input.panel.{chrom}.txt.tmp")),
         tmp2=temp(os.path.join(OUTDIR_TRUTH, "truth.gts.{chrom}.txt.tmp")),
     log:
-        os.path.join(OUTDIR_PANEL, "truth.gts.{chrom}.log"),
+        os.path.join(OUTDIR_TRUTH, "truth.gts.{chrom}.log"),
     params:
-        N="collect_truth_gts",
-        samples=",".join(get_samples_in_nipt_fam()),
+        samples=",".join(SAMPLES.keys()),
         truth=lambda wildcards: REFPANEL[wildcards.chrom]["truth"],
-        ref=lambda wildcards: REFPANEL[wildcards.chrom]["vcf"],
         af=if_use_af_in_refpanel,
         ql0="%CHROM:%POS:%REF:%ALT\\n",
         ql1="%CHROM:%POS:%REF:%ALT\\t%AF\\n",
@@ -43,85 +38,37 @@ rule collect_truth_gts:
         """
 
 
-rule plot_quilt_regular_by_chunk:
+rule collect_beagle_accuracy:
     input:
+        vcf=rules.beagle41_by_chrom.output.vcf,
         truth=rules.collect_truth_gts.output.gt,
         af=rules.collect_truth_gts.output.af,
-        vcf=rules.quilt_run_regular.output,
     output:
-        rds=os.path.join(
-            OUTDIR_QUILT1,
-            "refsize{size}",
-            "{chrom}",
-            "quilt.down{depth}x.{ff}f.regular.{chrom}.{start}.{end}.vcf.gz.rds",
-        ),
-    conda:
-        "../envs/quilt.yaml"
+        os.path.join(OUTDIR, "beagle4.1", "accuracy.down{depth}x.{chrom}.rds"),
     script:
-        "../scripts/accuracy_nipt.R"
+        "../scripts/accuracy_single.R"
 
 
-rule collect_quilt_regular_accuracy:
+rule collect_stitch_accuracy:
     input:
-        get_quilt_regular_accuracy_by_chunk
-    output:
-        os.path.join(
-            OUTDIR_QUILT1,
-            "refsize{size}",
-            "{chrom}",
-            "quilt.down{depth}x.{ff}f.regular.{chrom}.vcf.gz.rds.list",
-        ),
-    conda:
-        "../envs/quilt.yaml"
-    shell:
-        "echo {input} | tr ' ' '\n' > {output}"
-
-
-rule plot_quilt_regular:
-    input:
+        vcf=rules.stitch_by_chrom.output.vcf,
         truth=rules.collect_truth_gts.output.gt,
         af=rules.collect_truth_gts.output.af,
-        vcf=rules.quilt_ligate_regular.output.vcf,
     output:
-        rds=os.path.join(
-            OUTDIR_SUMMARY, "quilt.nipt.accuracy.regular.refsize{size}.{chrom}.down{depth}x.{ff}f.rds"
-        ),
-    log:
-        os.path.join(
-            OUTDIR_SUMMARY, "quilt.nipt.accuracy.regular.refsize{size}.{chrom}.down{depth}x.{ff}f.rds.llog"
-        ),
-    params:
-        N="plot_quilt_regular",
-    resources:
-        slots=1,
-    conda:
-        "../envs/quilt.yaml"
+        os.path.join(OUTDIR, "stitch", "accuracy.down{depth}x.{chrom}.rds"),
     script:
-        "../scripts/accuracy_nipt.R"
+        "../scripts/accuracy_single.R"
 
 
-
-rule collapse_accuracy_by_refsize:
+rule collect_phaseless_accuracy:
     input:
-        expand(rules.plot_quilt_regular.output.rds,
-               depth=config["coverage"], ff=config["fetalfrac"]
-               ,allow_missing=True),
+        vcf=rules.phaseless_impute_by_chrom.output.vcf,
+        truth=rules.collect_truth_gts.output.gt,
+        af=rules.collect_truth_gts.output.af,
     output:
-        rds=os.path.join(
-            OUTDIR_SUMMARY, "quilt.nipt.accuracy.regular.refsize{size}.{chrom}.rds"
-        ),
-    log:
-        os.path.join(
-            OUTDIR_SUMMARY, "quilt.nipt.accuracy.regular.refsize{size}.{chrom}.rds.llog"
-        ),
-    params:
-        N="collapse_accuracy_by_refsize",
-    resources:
-        slots=1,
-    conda:
-        "../envs/quilt.yaml"
+        os.path.join(OUTDIR, "phaseless", "accuracy.down{depth}x.{chrom}.rds"),
     script:
-        "../scripts/accuracy_collapse.R"
+        "../scripts/accuracy_single.R"
 
 
 
