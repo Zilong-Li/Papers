@@ -143,7 +143,7 @@ acc_phasing <- function(d0, d1, d2, d3, d4) {
 }
 
 ## input is matrix
-r2_by_freq <- function(breaks, af, truthG, testDS, which_snps = NULL, flip = FALSE, per_snp = FALSE) {
+r2_by_freq <- function(breaks, af, truthG, testDS, which_snps = NULL, flip = FALSE, per_snp = FALSE, per_ind = FALSE) {
   if (!is.null(which_snps)) {
     af <- af[which_snps]
     truthG <- truthG[which_snps, ]
@@ -159,7 +159,18 @@ r2_by_freq <- function(breaks, af, truthG, testDS, which_snps = NULL, flip = FAL
     testDS[w, ] <- 2 - testDS[w, ]
   }
   x <- cut(af, breaks = breaks)
-  if (ncol(truthG) > 1 && per_snp) {
+  if (per_ind) {
+    cors_per_af <- tapply(1:length(x), x, function(w) {
+      c(
+        n = length(w),
+        nA = sum(truthG[w, ], na.rm = TRUE),
+        simple = mean(sapply(1:ncol(truthG), function(ind) {
+          cor(truthG[w, ind], testDS[w, ind], use = "pairwise.complete")**2
+        }), na.rm = TRUE),
+        norm = NA
+      )
+    })
+  } else if (ncol(truthG) > 1 && per_snp) {
     # for multiple sample, calculate r2 per snp then average them
     cors_per_af <- tapply(1:length(x), x, function(w) {
       c(

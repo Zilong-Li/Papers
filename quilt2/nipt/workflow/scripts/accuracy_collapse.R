@@ -31,8 +31,6 @@ names(lsp) <- depths
 
 saveRDS(lsp, snakemake@output[["rds"]])
 
-rm(input)
-
 bins <- sapply(lsp, function(lff) {
   o <- sapply(lff, function(d) {
     d <- d[!sapply(d[, "Mat"], is.na), ] # rm na
@@ -53,7 +51,8 @@ mycols <- c("#e69f00", "#d55e00", "#56b4e9", "#cc79a7", "#009e73", "#0072b2", "#
 palette(mycols)
 
 pdf(paste0(snakemake@output[["rds"]], ".pdf"), h=6,w=12)
-par(mfrow=c(1,length(depths)))
+par(mfrow=c(2,length(depths)))
+
 for(dep in depths){
   plot(1, col = "transparent", axes = FALSE,
      xlim = c(min(x), max(x)), ylim = c(0, 1.0),
@@ -70,4 +69,16 @@ for(dep in depths){
 }
 dev.off()
 
-
+lsp <- list()
+i <- 1
+for(dep in seq_along(depths)){
+  lff <- list()
+  for(ff in seq_along(fetalfrac)){
+    rds <- input[[i]]
+    lff[[ff]] <- rds[["Pt"]]
+    i <- i + 1
+  }
+  names(lff) <- fetalfrac
+  lsp[[dep]] <- lff
+}
+names(lsp) <- depths
