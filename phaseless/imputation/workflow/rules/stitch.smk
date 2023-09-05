@@ -18,6 +18,7 @@ rule stitch_by_chrom:
     threads: config["threads"]
     shell:
         """
+        (
         {params.time} -v {params.bin} \
         --bamlist={input.bamlist} \
         --posfile={input.posfile} \
@@ -26,5 +27,7 @@ rule stitch_by_chrom:
         --K={params.K} \
         --nGen={params.nGen} \
         --nCores={threads} \
-        --outputdir={params.outdir} &> {log}
+        --outputdir={params.outdir} && \
+        bcftools index -f {output.vcf}
+        ) &> {log}
         """

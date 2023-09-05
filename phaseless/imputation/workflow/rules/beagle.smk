@@ -16,5 +16,7 @@ rule beagle41_by_chrom:
         "../envs/pandas.yaml"
     shell:
         """
-        {params.time} -v java -Xss5m -Xmx60g -jar {params.bin} gl={input} out={params.out} chrom={wildcards.chrom} nthreads={threads} &> {log}
+        (
+        {params.time} -v java -Xss5m -Xmx60g -jar {params.bin} gl={input} out={params.out} chrom={wildcards.chrom} nthreads={threads} && bcftools index -f {output.vcf}
+        ) &> {log}
         """

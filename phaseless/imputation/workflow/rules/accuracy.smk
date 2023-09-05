@@ -64,17 +64,27 @@ rule collect_stitch_accuracy:
         "../scripts/accuracy_single.R"
 
 
-rule collect_phaseless_accuracy:
+rule collect_phaseless_v0_accuracy:
     input:
-        vcf=rules.phaseless_impute_by_chrom.output.vcf,
+        vcf=rules.phaseless_v0_impute_by_chrom.output.vcf,
         truth=lambda wildcards: REFPANEL[wildcards.chrom]["truth"],
         af=rules.collect_truth_gts.output.af,
     output:
-        rds=os.path.join(OUTDIR, "phaseless", "accuracy.down{depth}x.{chrom}.rds"),
+        rds=os.path.join(OUTDIR, "phaseless_v0", "accuracy.down{depth}x.{chrom}.rds"),
     params:
         samples=",".join(SAMPLES.keys()),
     script:
         "../scripts/accuracy_single.R"
 
 
-
+rule collect_phaseless_v1_accuracy:
+    input:
+        vcf=rules.phaseless_v1_impute_by_chrom.output.vcf,
+        truth=lambda wildcards: REFPANEL[wildcards.chrom]["truth"],
+        af=rules.collect_truth_gts.output.af,
+    output:
+        rds=os.path.join(OUTDIR, "phaseless_v1", "accuracy.down{depth}x.{chrom}.rds"),
+    params:
+        samples=",".join(SAMPLES.keys()),
+    script:
+        "../scripts/accuracy_single.R"

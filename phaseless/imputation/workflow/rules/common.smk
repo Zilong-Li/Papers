@@ -90,7 +90,11 @@ def run_stitch():
 
 def run_phaseless():
     return expand(
-        rules.collect_phaseless_accuracy.output,
+        rules.collect_phaseless_v0_accuracy.output,
+        chrom=config["chroms"],
+        depth=config["coverage"],
+    ), expand(
+        rules.collect_phaseless_v1_accuracy.output,
         chrom=config["chroms"],
         depth=config["coverage"],
     )
