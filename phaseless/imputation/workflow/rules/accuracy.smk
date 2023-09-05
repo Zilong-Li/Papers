@@ -27,13 +27,13 @@ rule collect_truth_gts:
         (
         if [ -s {params.af} ];then perl -lane 'print join(":",@F[0..3])."\\t$F[4]"' {params.af} > {output.tmp}; \
         else \
-            bcftools +fill-tags {input.sites[0]} -- -t AF |  bcftools query -f '{params.ql1}' > {output.tmp}; \
+            bcftools +fill-tags {input.sites} -- -t AF |  bcftools query -f '{params.ql1}' > {output.tmp}; \
         fi
-        awk '{params.awk}' <(bcftools query -f '{params.ql0}' {input.sites[0]}) {output.tmp} >{output.af}
+        awk '{params.awk}' <(bcftools query -f '{params.ql0}' {input.sites}) {output.tmp} >{output.af}
         bcftools view -s {params.samples} {params.truth} | bcftools query -f '{params.ql2}' > {output.tmp2}
         HEADER="ID,"{params.samples}
         echo $HEADER | tr ',' '\t' > {output.gt}
-        awk '{params.awk2}' <(bcftools query -f '{params.ql0}' {input.sites[0]}) {output.tmp2} >> {output.gt}
+        awk '{params.awk2}' <(bcftools query -f '{params.ql0}' {input.sites}) {output.tmp2} >> {output.gt}
         ) &> {log}
         """
 
@@ -41,10 +41,12 @@ rule collect_truth_gts:
 rule collect_beagle_accuracy:
     input:
         vcf=rules.beagle41_by_chrom.output.vcf,
-        truth=rules.collect_truth_gts.output.gt,
+        truth=lambda wildcards: REFPANEL[wildcards.chrom]["truth"],
         af=rules.collect_truth_gts.output.af,
     output:
-        os.path.join(OUTDIR, "beagle4.1", "accuracy.down{depth}x.{chrom}.rds"),
+        rds=os.path.join(OUTDIR, "beagle4.1", "accuracy.down{depth}x.{chrom}.rds"),
+    params:
+        samples=",".join(SAMPLES.keys()),
     script:
         "../scripts/accuracy_single.R"
 
@@ -52,10 +54,12 @@ rule collect_beagle_accuracy:
 rule collect_stitch_accuracy:
     input:
         vcf=rules.stitch_by_chrom.output.vcf,
-        truth=rules.collect_truth_gts.output.gt,
+        truth=lambda wildcards: REFPANEL[wildcards.chrom]["truth"],
         af=rules.collect_truth_gts.output.af,
     output:
-        os.path.join(OUTDIR, "stitch", "accuracy.down{depth}x.{chrom}.rds"),
+        rds=os.path.join(OUTDIR, "stitch", "accuracy.down{depth}x.{chrom}.rds"),
+    params:
+        samples=",".join(SAMPLES.keys()),
     script:
         "../scripts/accuracy_single.R"
 
@@ -63,10 +67,12 @@ rule collect_stitch_accuracy:
 rule collect_phaseless_accuracy:
     input:
         vcf=rules.phaseless_impute_by_chrom.output.vcf,
-        truth=rules.collect_truth_gts.output.gt,
+        truth=lambda wildcards: REFPANEL[wildcards.chrom]["truth"],
         af=rules.collect_truth_gts.output.af,
     output:
-        os.path.join(OUTDIR, "phaseless", "accuracy.down{depth}x.{chrom}.rds"),
+        rds=os.path.join(OUTDIR, "phaseless", "accuracy.down{depth}x.{chrom}.rds"),
+    params:
+        samples=",".join(SAMPLES.keys()),
     script:
         "../scripts/accuracy_single.R"
 

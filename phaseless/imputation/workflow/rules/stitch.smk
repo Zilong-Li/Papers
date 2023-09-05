@@ -4,9 +4,9 @@ rule stitch_by_chrom:
         bamlist=rules.bamlist.output,
         posfile=rules.get_stitch_pos_file.output,
     output:
-        vcf=os.path.join(OUTDIR, "stitch", "down{depth}x.{chrom}.vcf.gz"),
+        vcf=os.path.join(OUTDIR, "stitch", "down{depth}x","stitch.{chrom}.vcf.gz"),
     log:
-        os.path.join(OUTDIR, "stitch", "down{depth}x.{chrom}.vcf.gz.llog"),
+        os.path.join(OUTDIR, "stitch", "down{depth}x","stitch.{chrom}.vcf.gz.llog"),
     params:
         time=config["time"],
         bin=config["stitch"]["bin"],
