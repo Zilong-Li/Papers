@@ -1,3 +1,12 @@
 #+title: Readme
 
-All scripts and pipelines used for my papers.
+All scripts and pipelines used for the paper.
+
+* Downsample only
+
+=snakemake --config RUN=makesample -j20 -n=
+
+
+* QUILT1 accuracy
+
+=snakemake --config RUN=quilt2acc -j20 -n=

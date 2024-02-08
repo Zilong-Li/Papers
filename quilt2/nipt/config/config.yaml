@@ -9,14 +9,15 @@ genome:
   
 samples_nipt: config/samples_nipt.tsv
 
-coverage: [1.0, 4.0, 8.0]
+coverage: [1.0, 4.0]
 # coverage: [4.0]
 fetalfrac: [0.1, 0.2, 0.3, 0.9]
 # fetalfrac: [0.1]
 chroms: ['chr20']
 refsize: [0]
 
-RUN: 'makesample'
+# RUN: 'makesample'
+RUN: 'quilt1acc'
 
 ## we wanna output some extra variants in buffer for ligation
 extra_buffer_in_quilt: 100000
