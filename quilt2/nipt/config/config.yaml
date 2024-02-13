@@ -9,9 +9,9 @@ genome:
   
 samples_nipt: config/samples_nipt.tsv
 
-coverage: [1.0, 4.0]
+coverage: [1.0, 4.0, 10]
 # coverage: [4.0]
-fetalfrac: [0.1, 0.2, 0.3, 0.9]
+fetalfrac: [0.05, 0.1, 0.2, 0.3, 0.9]
 # fetalfrac: [0.1]
 chroms: ['chr20']
 refsize: [0]
