@@ -100,6 +100,23 @@ rule quilt_run_regular:
     threads: 1
     shell:
         """
+        (
+        if [ {wildcards.ff} == 0.0 ];then \
+        {params.time} -v QUILT.R \
+            --prepared_reference_filename={input.rdata} \
+            --bamlist={input.bam} \
+            --chr={wildcards.chrom} \
+            --regionStart={wildcards.start} \
+            --regionEnd={wildcards.end} \
+            --buffer={params.buffer} \
+            --nGen={params.nGen} \
+            --method="diploid" \
+            --Ksubset={params.Ksubset} \
+            --Knew={params.Ksubset} \
+            --nGibbsSamples={params.nGibbsSamples} \
+            --n_seek_its={params.n_seek_its} \
+            --output_filename={output} \
+        ; else \
         {params.time} -v QUILT.R \
             --prepared_reference_filename={input.rdata} \
             --bamlist={input.bam} \
@@ -114,7 +131,9 @@ rule quilt_run_regular:
             --Knew={params.Ksubset} \
             --nGibbsSamples={params.nGibbsSamples} \
             --n_seek_its={params.n_seek_its} \
-            --output_filename={output} &> {log}
+            --output_filename={output} \
+        ; fi
+        ) &> {log}
         """
 
 

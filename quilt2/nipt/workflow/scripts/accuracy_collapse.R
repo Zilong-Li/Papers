@@ -62,7 +62,7 @@ bins <- sort(unique(as.vector(unlist(bins))))
 x <- log10(as.numeric(bins))
 labels <- 100 * bins
 
-ffpchs <- c(15, 16, 17, 18, 19)
+ffpchs <- c(10,15, 16, 17, 18, 19)
 ffpchs <- ffpchs[seq_along(fetalfrac)]
 names(ffpchs) <- fetalfrac
 

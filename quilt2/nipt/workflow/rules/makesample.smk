@@ -27,9 +27,13 @@ rule downsample_bam_in_fam:
         KOUT={output.bam}.{params.kid}.bam
         FRAC=$(echo "scale=4 ; {wildcards.depth} * (1 - {wildcards.ff}) / {params.mdepth}" | bc -l)
         samtools view -s $FRAC -o $MOUT {input.mbam} {wildcards.chrom} && samtools index $MOUT
-        FRAC=$(echo "scale=4 ; {wildcards.depth} * {wildcards.ff} / {params.kdepth}" | bc -l)
-        samtools view -s $FRAC -o $KOUT {input.kbam} {wildcards.chrom} && samtools index $KOUT
-        samtools merge -f -c -p --no-PG -o {output.bam} $MOUT $KOUT
+        if [ {wildcards.ff} != 0.0 ];then \
+            FRAC=$(echo "scale=4 ; {wildcards.depth} * {wildcards.ff} / {params.kdepth}" | bc -l); \
+            samtools view -s $FRAC -o $KOUT {input.kbam} {wildcards.chrom} && samtools index $KOUT; \
+            samtools merge -f -c -p --no-PG -o {output.bam} $MOUT $KOUT; \
+        else \
+            mv $MOUT {output.bam}; \
+        fi
         samtools view -H {output.bam} | sed '/^@RG/s/SM:.[^\tCN]*/SM:{wildcards.fam}/' > {output.bam}.h
         samtools reheader {output.bam}.h {output.bam} > {output.bam}.tmp.bam
         mv {output.bam}.tmp.bam {output.bam} && samtools index {output.bam}

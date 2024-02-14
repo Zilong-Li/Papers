@@ -1,5 +1,5 @@
 library(data.table)
-library(stringr)
+library(vcfppR)
 
 modified_calculate_pse <- function(
     test,
