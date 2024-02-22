@@ -51,6 +51,4 @@ quilt1:
   lowram: 'TRUE'
   Ksubset: 400
   n_seek_its: 3
-  impute_rare_common: 'TRUE'
-  rare_af_threshold: 0.001
 
