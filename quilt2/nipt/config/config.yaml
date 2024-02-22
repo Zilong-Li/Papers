@@ -17,7 +17,7 @@ chroms: ['chr20']
 refsize: [0]
 
 # RUN: 'makesample'
-RUN: 'quilt1acc'
+RUN: 'quilt2acc'
 
 ## we wanna output some extra variants in buffer for ligation
 extra_buffer_in_quilt: 100000
@@ -27,15 +27,15 @@ quilt2:
   nGen: 100
   buffer: 500000
   nGibbsSamples: 7
-  small_ref_panel_block_gibbs_iterations: c(3,6,9)
-  small_ref_panel_gibbs_iterations: 20
+  small_ref_panel_block_gibbs_iterations: 3
+  small_ref_panel_gibbs_iterations: 10
   lowram: 'TRUE'
-  Ksubset: 400
-  n_seek_its: 3
+  Ksubset: 1000
+  n_seek_its: 5
   impute_rare_common: 'TRUE'
-  mspbwtB: 64
-  mspbwtL: 40
-  mspbwtM: 3
+  mspbwtB: 32
+  mspbwtL: 10
+  mspbwtM: 1
   mspbwt-nindices: 4
   rare_af_threshold: 0.001
 

@@ -37,6 +37,8 @@ def get_all_results():
         return quilt1chunk()
     elif RUN == "quilt1acc":
         return quilt1acc()
+    elif RUN == "quilt2acc":
+        return quilt2acc()
     else:
         raise RuntimeError("this is an invalid RUN!")
 
@@ -91,11 +93,17 @@ def quilt1chunk():
 
 def quilt1acc():
     return expand(
-        rules.collapse_accuracy_by_refsize.output,
+        rules.collapse_regular_accuracy_by_refsize.output,
         size=config["refsize"],
         chrom=config["chroms"],
     )
 
+def quilt2acc():
+    return expand(
+        rules.collapse_mspbwt_accuracy_by_refsize.output,
+        size=config["refsize"],
+        chrom=config["chroms"],
+    )
 
 def get_samples_in_nipt_fam():
     out = []
@@ -129,10 +137,26 @@ def get_quilt_regular_output(wildcards):
         rules.quilt_run_regular.output, zip, start=starts, end=ends, allow_missing=True
     )
 
+def get_quilt_mspbwt_output(wildcards):
+    starts, ends = get_regions_list_per_chrom(
+        wildcards.chrom, config["quilt2"]["chunksize"]
+    )
+    return expand(
+        rules.quilt_run_regular.output, zip, start=starts, end=ends, allow_missing=True
+    )
+
 def get_quilt_regular_accuracy_by_chunk(wildcards):
     starts, ends = get_regions_list_per_chrom(
         wildcards.chrom, config["quilt1"]["chunksize"]
     )
     return expand(
         rules.plot_quilt_regular_by_chunk.output, zip, start=starts, end=ends, allow_missing=True
+    )
+
+def get_quilt_mspbwt_accuracy_by_chunk(wildcards):
+    starts, ends = get_regions_list_per_chrom(
+        wildcards.chrom, config["quilt2"]["chunksize"]
+    )
+    return expand(
+        rules.plot_quilt_mspbwt_by_chunk.output, zip, start=starts, end=ends, allow_missing=True
     )

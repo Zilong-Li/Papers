@@ -12,6 +12,7 @@ include: "rules/makesample.smk"
 include: "rules/refpanels.smk"
 include: "rules/quilt.smk"
 include: "rules/accuracy.smk"
+include: "rules/accuracy2.smk"
 
 
 rule all:
