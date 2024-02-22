@@ -19,8 +19,6 @@ rule quilt_prepare_regular:
         nGen=config["quilt1"]["nGen"],
         buffer=config["quilt1"]["buffer"],
         lowram=config["quilt1"]["lowram"],
-        impute_rare_common=config["quilt1"]["impute_rare_common"],
-        rare_af_threshold=config["quilt1"]["rare_af_threshold"],
         gmap=if_use_quilt_map_in_refpanel,
         outdir=lambda wildcards, output: os.path.dirname(output[0])[:-5],
     log:
@@ -196,8 +194,6 @@ rule quilt_prepare_mspbwt:
         outdir=lambda wildcards, output: os.path.dirname(output[0])[:-5],
         nGen=config["quilt2"]["nGen"],
         buffer=config["quilt2"]["buffer"],
-        start=get_quilt_chunk_region_start,
-        end=get_quilt_chunk_region_end,
         gmap=if_use_quilt_map_in_refpanel,
         lowram=config["quilt2"]["lowram"],
         impute_rare_common=config["quilt2"]["impute_rare_common"],
@@ -216,8 +212,8 @@ rule quilt_prepare_mspbwt:
             --genetic_map_file='{params.gmap}' \
             --reference_vcf_file={input.vcf} \
             --chr={wildcards.chrom} \
-            --regionStart={params.start} \
-            --regionEnd={params.end} \
+            --regionStart={wildcards.start} \
+            --regionEnd={wildcards.end} \
             --use_hapMatcherR={params.lowram} \
             --buffer={params.buffer} \
             --nGen={params.nGen} \
@@ -231,8 +227,8 @@ rule quilt_prepare_mspbwt:
         {params.time} -v QUILT_prepare_reference.R \
             --reference_vcf_file={input.vcf} \
             --chr={wildcards.chrom} \
-            --regionStart={params.start} \
-            --regionEnd={params.end} \
+            --regionStart={wildcards.start} \
+            --regionEnd={wildcards.end} \
             --buffer={params.buffer} \
             --use_hapMatcherR={params.lowram} \
             --nGen={params.nGen} \
@@ -264,8 +260,6 @@ rule quilt_run_mspbwt:
         N="quilt_run_mspbwt",
         nGen=config["quilt2"]["nGen"],
         buffer=config["quilt2"]["buffer"],
-        start=get_quilt_chunk_region_start,
-        end=get_quilt_chunk_region_end,
         Ksubset=config["quilt2"]["Ksubset"],
         nGibbsSamples=config["quilt2"]["nGibbsSamples"],
         n_seek_its=config["quilt2"]["n_seek_its"],
