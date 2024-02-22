@@ -96,7 +96,7 @@ for(dep in depths){
   boxplot(value ~ variable + ff, d , xaxt = "n", col = 1:2, at = a, border = NULL,
           cex.lab = 1.5, cex.axis = 1.5, xlab = "Fetal Fraction", ylab = "r2 per sample")
   axis(side = 1, at = b, labels = fetalfrac,)
-  legend("bottomright", legend = c("Mother", "Kid"), fill = 1:2, bty = "n", cex=2)
+  ## legend("bottomright", legend = c("Mother", "Kid"), fill = 1:2, bty = "n", cex=2)
 
 }
 

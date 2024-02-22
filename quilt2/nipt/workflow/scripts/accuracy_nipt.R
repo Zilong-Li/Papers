@@ -72,6 +72,7 @@ r2samperaf <- function(imputed, truth, af, bins, sites) {
   as.data.frame(cbind(bin = bins[-1], r2mds = res[, "simple"], r2fds = rep(NA, nrow(res)), n = res[, "n"], nA = res[, "nA"]))
 }
 
+method <- snakemake@params[["method"]]
 ff <- as.numeric(snakemake@wildcards[["ff"]])
 samplefile <- snakemake@config[["samples_nipt"]]
 samples <- read.table(samplefile,h=T)
@@ -97,7 +98,7 @@ bins <- sort(unique(c(
   seq(0.1, 0.5, length.out = 5)
 )))
 
-if(ff > 0) {
+if(method == "nipt") {
   TMP <- vcftable(niptvcf, format = "MDS")
   imputed[["mds"]] <- TMP[[10]]
   TMP <- vcftable(niptvcf, format = "FDS")

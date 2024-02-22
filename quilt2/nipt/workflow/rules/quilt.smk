@@ -81,6 +81,7 @@ rule quilt_run_regular:
     params:
         time=config["time"],
         N="quilt_run_regular",
+        method=config["quilt1"]["method"],
         nGen=config["quilt1"]["nGen"],
         buffer=config["quilt1"]["buffer"],
         Ksubset=config["quilt1"]["Ksubset"],
@@ -101,7 +102,7 @@ rule quilt_run_regular:
     shell:
         """
         (
-        if [ {wildcards.ff} == 0.0 ];then \
+        if [ {params.method} == "nipt" ];then \
         {params.time} -v QUILT.R \
             --prepared_reference_filename={input.rdata} \
             --bamlist={input.bam} \
@@ -110,7 +111,8 @@ rule quilt_run_regular:
             --regionEnd={wildcards.end} \
             --buffer={params.buffer} \
             --nGen={params.nGen} \
-            --method="diploid" \
+            --fflist={input.ff} \
+            --method="nipt" \
             --Ksubset={params.Ksubset} \
             --Knew={params.Ksubset} \
             --nGibbsSamples={params.nGibbsSamples} \
@@ -120,13 +122,12 @@ rule quilt_run_regular:
         {params.time} -v QUILT.R \
             --prepared_reference_filename={input.rdata} \
             --bamlist={input.bam} \
-            --fflist={input.ff} \
             --chr={wildcards.chrom} \
             --regionStart={wildcards.start} \
             --regionEnd={wildcards.end} \
             --buffer={params.buffer} \
             --nGen={params.nGen} \
-            --method="nipt" \
+            --method="diploid" \
             --Ksubset={params.Ksubset} \
             --Knew={params.Ksubset} \
             --nGibbsSamples={params.nGibbsSamples} \

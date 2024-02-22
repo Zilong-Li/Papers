@@ -92,6 +92,7 @@ rule plot_quilt_regular:
         ),
     params:
         N="plot_quilt_regular",
+        method=config["quilt1"]["method"],
         truth=lambda wildcards: REFPANEL[wildcards.chrom]["truth"],
     resources:
         slots=1,
