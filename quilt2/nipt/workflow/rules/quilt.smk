@@ -200,7 +200,14 @@ rule quilt_prepare_mspbwt:
         rare_af_threshold=config["quilt2"]["rare_af_threshold"],
         nindices=config["quilt2"]["mspbwt-nindices"],
     log:
-        lambda wildcards, output: output[0] + ".llog",
+        os.path.join(
+            OUTDIR_QUILT2,
+            "refsize{size}",
+            "{chrom}",
+            "prep_mspbwt",
+            "RData",
+            "QUILT_prepared_reference.{chrom}.chunk_{chunkid}.RData.llog",
+        ),
     conda:
         "../envs/quilt.yaml"
     threads: 1
@@ -271,7 +278,12 @@ rule quilt_run_mspbwt:
         mspbwtM=config["quilt2"]["mspbwtM"],
         mspbwtL=config["quilt2"]["mspbwtL"],
     log:
-        lambda wildcards, output: output[0] + ".llog",
+        os.path.join(
+            OUTDIR_QUILT2,
+            "refsize{size}",
+            "{chrom}",
+            "quilt.down{depth}x.{ff}f.mspbwt.{chrom}.{start}.{end}.vcf.gz.llog",
+        ),
     conda:
         "../envs/quilt.yaml"
     threads: 1
@@ -350,7 +362,12 @@ rule quilt_ligate_mspbwt:
             )
         ),
     log:
-        lambda wildcards, output: output[0] + ".llog",
+        os.path.join(
+            OUTDIR_QUILT2,
+            "refsize{size}",
+            "{chrom}",
+            "quilt.down{depth}x.{ff}f.mspbwt.{chrom}.vcf.gz.llog",
+        ),
     params:
         N="quilt_ligate_mspbwt",
     conda:
