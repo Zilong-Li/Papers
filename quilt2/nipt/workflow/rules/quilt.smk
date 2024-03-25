@@ -19,6 +19,8 @@ rule quilt_prepare_regular:
         nGen=config["quilt1"]["nGen"],
         buffer=config["quilt1"]["buffer"],
         lowram=config["quilt1"]["lowram"],
+        rare_af_threshold=config["quilt1"]["rare_af_threshold"],
+        impute_rare_common=config["quilt1"]["impute_rare_common"],
         gmap=if_use_quilt_map_in_refpanel,
         outdir=lambda wildcards, output: os.path.dirname(output[0])[:-5],
     log:
@@ -47,6 +49,9 @@ rule quilt_prepare_regular:
             --regionEnd={wildcards.end} \
             --buffer={params.buffer} \
             --nGen={params.nGen} \
+            --use_hapMatcherR={params.lowram} \
+            --impute_rare_common={params.impute_rare_common} \
+            --rare_af_threshold={params.rare_af_threshold} \
             --outputdir={params.outdir} \
         ; else \
         {params.time} -v QUILT_prepare_reference.R \
@@ -58,6 +63,9 @@ rule quilt_prepare_regular:
             --regionEnd={wildcards.end} \
             --buffer={params.buffer} \
             --nGen={params.nGen} \
+            --use_hapMatcherR={params.lowram} \
+            --impute_rare_common={params.impute_rare_common} \
+            --rare_af_threshold={params.rare_af_threshold} \
             --outputdir={params.outdir} \
         ; fi
         ) &> {log}
@@ -83,8 +91,10 @@ rule quilt_run_regular:
         nGen=config["quilt1"]["nGen"],
         buffer=config["quilt1"]["buffer"],
         Ksubset=config["quilt1"]["Ksubset"],
+        Knew=config["quilt1"]["Knew"],
         nGibbsSamples=config["quilt1"]["nGibbsSamples"],
         n_seek_its=config["quilt1"]["n_seek_its"],
+        impute_rare_common=config["quilt1"]["impute_rare_common"],
         block_gibbs=config["quilt1"]["small_ref_panel_block_gibbs_iterations"],
         gibbs_iters=config["quilt1"]["small_ref_panel_gibbs_iterations"],
     log:
@@ -100,7 +110,7 @@ rule quilt_run_regular:
     shell:
         """
         (
-        if [ {params.method} == "nipt" ];then \
+        if [[ {params.method} == "nipt" && {wildcards.ff} != "0.0" ]];then \
         {params.time} -v QUILT.R \
             --prepared_reference_filename={input.rdata} \
             --bamlist={input.bam} \
@@ -111,8 +121,9 @@ rule quilt_run_regular:
             --nGen={params.nGen} \
             --fflist={input.ff} \
             --method="nipt" \
+            --impute_rare_common={params.impute_rare_common} \
             --Ksubset={params.Ksubset} \
-            --Knew={params.Ksubset} \
+            --Knew={params.Knew} \
             --nGibbsSamples={params.nGibbsSamples} \
             --n_seek_its={params.n_seek_its} \
             --output_filename={output} \
@@ -126,8 +137,9 @@ rule quilt_run_regular:
             --buffer={params.buffer} \
             --nGen={params.nGen} \
             --method="diploid" \
+            --impute_rare_common={params.impute_rare_common} \
             --Ksubset={params.Ksubset} \
-            --Knew={params.Ksubset} \
+            --Knew={params.Knew} \
             --nGibbsSamples={params.nGibbsSamples} \
             --n_seek_its={params.n_seek_its} \
             --output_filename={output} \
@@ -186,7 +198,7 @@ rule quilt_prepare_mspbwt:
             "{chrom}",
             "prep_mspbwt",
             "RData",
-            "QUILT_prepared_reference.{chrom}.chunk_{chunkid}.RData",
+            "QUILT_prepared_reference.{chrom}.{start}.{end}.RData",
         ),
     params:
         time=config["time"],
@@ -206,7 +218,7 @@ rule quilt_prepare_mspbwt:
             "{chrom}",
             "prep_mspbwt",
             "RData",
-            "QUILT_prepared_reference.{chrom}.chunk_{chunkid}.RData.llog",
+            "QUILT_prepared_reference.{chrom}.{start}.{end}.RData.llog",
         ),
     conda:
         "../envs/quilt.yaml"
@@ -254,7 +266,7 @@ rule quilt_run_mspbwt:
         vcf=rules.subset_refpanel_by_region.output.vcf,
         bam=rules.bamlist.output.bam,
         ff=rules.bamlist.output.ff,
-        rdata=rules.quilt_prepare_regular.output,
+        rdata=rules.quilt_prepare_mspbwt.output,
     output:
         os.path.join(
             OUTDIR_QUILT2,
@@ -265,6 +277,7 @@ rule quilt_run_mspbwt:
     params:
         time=config["time"],
         N="quilt_run_mspbwt",
+        method=config["quilt2"]["method"],
         nGen=config["quilt2"]["nGen"],
         buffer=config["quilt2"]["buffer"],
         Ksubset=config["quilt2"]["Ksubset"],
@@ -290,7 +303,7 @@ rule quilt_run_mspbwt:
     shell:
         """
         (
-        if [ {params.method} == "nipt" ];then \
+        if [[ {params.method} == "nipt" && {wildcards.ff} != "0.0" ]];then \
         {params.time} -v QUILT.R \
             --reference_vcf_file={input.vcf} \
             --prepared_reference_filename={input.rdata} \
@@ -303,9 +316,9 @@ rule quilt_run_mspbwt:
             --fflist={input.ff} \
             --method="nipt" \
             --Knew={params.Ksubset} \
+            --Ksubset={params.Ksubset} \
             --use_hapMatcherR={params.lowram} \
             --impute_rare_common={params.impute_rare_common} \
-            --zilong=FALSE \
             --use_mspbwt=TRUE \
             --mspbwtM={params.mspbwtM} \
             --mspbwtL={params.mspbwtL} \
@@ -327,9 +340,9 @@ rule quilt_run_mspbwt:
             --nGen={params.nGen} \
             --method="diploid" \
             --Knew={params.Ksubset} \
+            --Ksubset={params.Ksubset} \
             --use_hapMatcherR={params.lowram} \
             --impute_rare_common={params.impute_rare_common} \
-            --zilong=FALSE \
             --use_mspbwt=TRUE \
             --mspbwtM={params.mspbwtM} \
             --mspbwtL={params.mspbwtL} \

@@ -79,8 +79,8 @@ for(dep in depths){
      ylab = "Aggregated R2 within each MAF bin", xlab = "Minor Allele Frequency %",
      main = paste0("depth:", dep))
   for(ff in fetalfrac){
-    points(x, lsp[[dep]][[ff]][,"Mat"], pch = ffpchs[ff], col = mycols[1], cex = 1.3, type = "b")
-    points(x, lsp[[dep]][[ff]][,"Fet"], pch = ffpchs[ff], col = mycols[2], cex = 1.3, type = "b")
+    points(x, rmna(lsp[[dep]][[ff]][,"Mat"]), pch = ffpchs[ff], col = mycols[1], cex = 1.3, type = "b")
+    points(x, rmna(lsp[[dep]][[ff]][,"Fet"]), pch = ffpchs[ff], col = mycols[2], cex = 1.3, type = "b")
   }
   axis(side = 1, at = x, labels = labels)
   axis(side = 2, at = seq(0, 1, 0.2))

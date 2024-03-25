@@ -77,7 +77,7 @@ ff <- as.numeric(snakemake@wildcards[["ff"]])
 samplefile <- snakemake@config[["samples_nipt"]]
 samples <- read.table(samplefile,h=T)
 niptvcf <- snakemake@input[["vcf"]]
-imputed <- vcftable(niptvcf, collapse = T, format = ifelse(ff==0, "DS", "GT"))
+imputed <- vcftable(niptvcf, collapse = T, format = ifelse(ff==0.0, "DS", "GT"))
 imputed$id <- paste(imputed$chr, imputed$pos, imputed$ref, imputed$alt, sep = ":")
 chr <- unique(imputed$chr)
 region <- paste0(chr,":", paste0(range(imputed$pos), collapse = "-"))
@@ -92,13 +92,14 @@ af <- af[match(sites, af[,1]), 2]
 names(af) <- sites
 
 bins <- sort(unique(c(
-  ## c(0, 0.01 / 100, 0.02 / 100, 0.05 / 100),
+  c(0, 0.01 / 1000, 0.02 / 1000, 0.05 / 1000),
+  c(0, 0.01 / 100, 0.02 / 100, 0.05 / 100),
   c(0, 0.01 / 10, 0.02 / 10, 0.05 / 10),
   c(0, 0.01 / 1, 0.02 / 1, 0.05 / 1),
   seq(0.1, 0.5, length.out = 5)
 )))
 
-if(method == "nipt") {
+if(method == "nipt" && ff!=0.0) {
   TMP <- vcftable(niptvcf, format = "MDS")
   imputed[["mds"]] <- TMP[[10]]
   TMP <- vcftable(niptvcf, format = "FDS")

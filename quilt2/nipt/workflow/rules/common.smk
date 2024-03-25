@@ -31,6 +31,8 @@ RUN = config["RUN"]
 def get_all_results():
     if RUN == "makesample":
         return makesample()
+    elif RUN == "gettruth":
+        return gettruth()
     elif RUN == "chunkrefpanel":
         return chunkrefpanel()
     elif RUN == "quilt1chunk":
@@ -72,6 +74,12 @@ def makesample():
         chrom=config["chroms"],
     )
 
+
+def gettruth():
+    return expand(
+        rules.collect_truth_gts.output,
+        chrom=config["chroms"],
+    )
 
 def chunkrefpanel():
     return expand(
@@ -142,7 +150,7 @@ def get_quilt_mspbwt_output(wildcards):
         wildcards.chrom, config["quilt2"]["chunksize"]
     )
     return expand(
-        rules.quilt_run_regular.output, zip, start=starts, end=ends, allow_missing=True
+        rules.quilt_run_mspbwt.output, zip, start=starts, end=ends, allow_missing=True
     )
 
 def get_quilt_regular_accuracy_by_chunk(wildcards):
