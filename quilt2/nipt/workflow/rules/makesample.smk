@@ -27,10 +27,10 @@ rule downsample_bam_in_fam:
         KOUT={output.bam}.{params.kid}.bam
         FRAC=$(echo "scale=4 ; {wildcards.depth} * (1 - {wildcards.ff}) / {params.mdepth}" | bc -l)
         SEED=100
-        samtools view -h -@ 2 --subsample-seed $SEED --subsample $FRAC {input.mbam} {wildcards.chrom} | awk '/^@/;!/^@/{{print "m:u"NR":"$0}}' | samtools view -@ 2 -o $MOUT  && samtools index $MOUT
+        samtools view -h -@ 2 --subsample-seed $SEED --subsample $FRAC {input.mbam} {wildcards.chrom} | awk '/^@/;!/^@/{{print "m:"$0}}' | samtools view -@ 2 -o $MOUT  && samtools index $MOUT
         if [ {wildcards.ff} != 0.0 ];then \
             FRAC=$(echo "scale=4 ; {wildcards.depth} * {wildcards.ff} / {params.kdepth}" | bc -l); \
-            samtools view -h -@ 2 --subsample-seed $SEED --subsample $FRAC {input.kbam} {wildcards.chrom} | awk '/^@/;!/^@/{{print "k:u"NR":"$0}}' | samtools view -@ 2 -o $KOUT  && samtools index $KOUT; \
+            samtools view -h -@ 2 --subsample-seed $SEED --subsample $FRAC {input.kbam} {wildcards.chrom} | awk '/^@/;!/^@/{{print "k:"$0}}' | samtools view -@ 2 -o $KOUT  && samtools index $KOUT; \
             samtools merge -@ 2 -f -c -p --no-PG -o {output.bam} $MOUT $KOUT; \
         else \
             mv $MOUT {output.bam}; \
