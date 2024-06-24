@@ -75,9 +75,7 @@ rule subset_refpanel_by_region:
 
 
 def get_sites_subset_refpanel_by_region(wildcards):
-    starts, ends = get_regions_list_per_chrom(
-        wildcards.chrom, config["chunksize"]
-    )
+    starts, ends = get_refpanel_chunks(wildcards.chrom)
     return expand(
         rules.subset_refpanel_by_region.output.sites,
         zip,

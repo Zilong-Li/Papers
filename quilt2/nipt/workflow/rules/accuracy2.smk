@@ -41,11 +41,11 @@ rule plot_quilt_mspbwt:
         vcf=rules.quilt_ligate_mspbwt.output.vcf,
     output:
         rds=os.path.join(
-            OUTDIR_SUMMARY, "quilt.nipt.accuracy.mspbwt.refsize{size}.{chrom}.down{depth}x.{ff}f.rds"
+            OUTDIR_SUMMARY, "quilt.nipt.accuracy.mspbwt.ref{size}s.{chrom}.down{depth}x.{ff}f.rds"
         ),
     log:
         os.path.join(
-            OUTDIR_SUMMARY, "quilt.nipt.accuracy.mspbwt.refsize{size}.{chrom}.down{depth}x.{ff}f.rds.llog"
+            OUTDIR_SUMMARY, "quilt.nipt.accuracy.mspbwt.ref{size}s.{chrom}.down{depth}x.{ff}f.rds.llog"
         ),
     params:
         N="plot_quilt_mspbwt",

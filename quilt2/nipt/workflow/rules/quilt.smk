@@ -78,12 +78,12 @@ rule quilt_run_regular:
         ff=rules.bamlist.output.ff,
         rdata=rules.quilt_prepare_regular.output,
     output:
-        os.path.join(
+        temp(os.path.join(
             OUTDIR_QUILT1,
             "refsize{size}",
             "{chrom}",
             "quilt.down{depth}x.{ff}f.regular.{chrom}.{start}.{end}.vcf.gz",
-        ),
+        )),
     params:
         time=config["time"],
         N="quilt_run_regular",
@@ -268,12 +268,12 @@ rule quilt_run_mspbwt:
         ff=rules.bamlist.output.ff,
         rdata=rules.quilt_prepare_mspbwt.output,
     output:
-        os.path.join(
+        temp(os.path.join(
             OUTDIR_QUILT2,
             "refsize{size}",
             "{chrom}",
             "quilt.down{depth}x.{ff}f.mspbwt.{chrom}.{start}.{end}.vcf.gz",
-        ),
+        )),
     params:
         time=config["time"],
         N="quilt_run_mspbwt",

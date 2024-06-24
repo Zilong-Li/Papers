@@ -44,9 +44,9 @@ def get_all_results():
     else:
         raise RuntimeError("this is an invalid RUN!")
 
-
-def get_regions_list_per_chrom(chrom, chunksize=5000000):
-    """split chr into chunks given chunksize; return a list of '[start,end]' pairs"""
+def get_chunks_by_chrom(chrom):
+    """split chr into chunks given chunksize; return [starts],[ends]"""
+    chunksize = config["chunksize"]
     starts, ends = [], []
     if REFPANEL[chrom].get("region"):
         rg = REFPANEL[chrom]["region"].split("-")
@@ -64,6 +64,30 @@ def get_regions_list_per_chrom(chrom, chunksize=5000000):
             starts.append(ps)
             ends.append(pe)
     return starts, ends
+
+
+def get_glimpse_chunks_in(fn):
+    starts, ends = [], []
+    with open(fn) as f:
+        for row in f:
+            """0       chr20   chr20:82590-6074391     chr20:82590-5574162     5491573 1893"""
+            tmp = row.strip().split("\t")
+            rg = tmp[2].split(":")
+            ps, pe = rg[1].split("-")
+            starts.append(int(ps))
+            ends.append(int(pe))
+    return starts, ends
+
+
+def get_refpanel_chunks(chrom):
+    """use quilt_chunk or glimpse_chunk if defined, otherwise split the chromosome by chunks"""
+    if REFPANEL[chrom].get("quilt_chunk"):
+        return get_glimpse_chunks_in(REFPANEL[chrom]["quilt_chunk"])
+    elif REFPANEL[chrom].get("glimpse_chunk"):
+        return get_glimpse_chunks_in(REFPANEL[chrom]["glimpse_chunk"])
+    else:
+        return get_chunks_by_chrom(chrom)
+
 
 
 def makesample():
@@ -138,33 +162,25 @@ def if_use_af_in_refpanel(wildcards):
         return "false"
 
 def get_quilt_regular_output(wildcards):
-    starts, ends = get_regions_list_per_chrom(
-        wildcards.chrom, config["quilt1"]["chunksize"]
-    )
+    starts, ends = get_refpanel_chunks(wildcards.chrom)
     return expand(
         rules.quilt_run_regular.output, zip, start=starts, end=ends, allow_missing=True
     )
 
 def get_quilt_mspbwt_output(wildcards):
-    starts, ends = get_regions_list_per_chrom(
-        wildcards.chrom, config["quilt2"]["chunksize"]
-    )
+    starts, ends = get_refpanel_chunks(wildcards.chrom)
     return expand(
         rules.quilt_run_mspbwt.output, zip, start=starts, end=ends, allow_missing=True
     )
 
 def get_quilt_regular_accuracy_by_chunk(wildcards):
-    starts, ends = get_regions_list_per_chrom(
-        wildcards.chrom, config["quilt1"]["chunksize"]
-    )
+    starts, ends = get_refpanel_chunks(wildcards.chrom)
     return expand(
         rules.plot_quilt_regular_by_chunk.output, zip, start=starts, end=ends, allow_missing=True
     )
 
 def get_quilt_mspbwt_accuracy_by_chunk(wildcards):
-    starts, ends = get_regions_list_per_chrom(
-        wildcards.chrom, config["quilt2"]["chunksize"]
-    )
+    starts, ends = get_refpanel_chunks(wildcards.chrom)
     return expand(
         rules.plot_quilt_mspbwt_by_chunk.output, zip, start=starts, end=ends, allow_missing=True
     )
