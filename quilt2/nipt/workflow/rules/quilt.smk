@@ -181,9 +181,8 @@ rule quilt_ligate_regular:
     shell:
         """
         ( \
-           echo {input} | tr ' ' '\n' > {output.lst} && \
-           bcftools concat --file-list {output.lst} --output-type z --threads 4 -o {output.vcf} && \
-           bcftools index -f {output.vcf} \
+        echo {input} | tr ' ' '\n' > {output.lst} && \
+        bcftools concat --write-index -aD --file-list {output.lst} --output-type z --threads 4 -o {output.vcf} 
         ) &> {log}
         """
 
@@ -388,8 +387,7 @@ rule quilt_ligate_mspbwt:
     shell:
         """
         ( \
-           echo {input} | tr ' ' '\n' > {output.lst} && \
-           bcftools concat --file-list {output.lst} --output-type z --threads 4 -o {output.vcf} && \
-           bcftools index -f {output.vcf} \
+        echo {input} | tr ' ' '\n' > {output.lst} && \
+        bcftools concat --write-index -aD --file-list {output.lst} --output-type z --threads 4 -o {output.vcf} 
         ) &> {log}
         """
