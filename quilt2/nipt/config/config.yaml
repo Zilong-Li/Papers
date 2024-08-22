@@ -1,0 +1,54 @@
+
+time: "/usr/bin/time"
+
+genome:
+  fasta: /maps/projects/alab/people/rlk420/datahub/ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/GRCh38_reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa
+  species: human
+  build: hg38
+  refpanel: config/refpanel.tsv
+  
+samples_nipt: config/samples_nipt.tsv
+
+coverage: [0.25, 1.0, 2.0, 4.0, 10]
+# coverage: [4.0]
+fetalfrac: [0.0, 0.05, 0.1, 0.15, 0.2, 0.3]
+# fetalfrac: [0.1]
+chroms: ['chr20']
+refsize: [0]
+
+# RUN: 'makesample'
+RUN: 'quilt2acc'
+
+## we wanna output some extra variants in buffer for ligation
+extra_buffer_in_quilt: 100000
+
+quilt2:
+  chunksize: 5000000
+  nGen: 100
+  buffer: 500000
+  nGibbsSamples: 7
+  small_ref_panel_block_gibbs_iterations: 3
+  small_ref_panel_gibbs_iterations: 10
+  lowram: 'TRUE'
+  Ksubset: 1000
+  n_seek_its: 5
+  impute_rare_common: 'TRUE'
+  mspbwtB: 32
+  mspbwtL: 10
+  mspbwtM: 1
+  mspbwt-nindices: 4
+  rare_af_threshold: 0.001
+
+quilt1:
+  chunksize: 5000000
+  #method: 'diploid'
+  method: 'nipt'
+  nGen: 100
+  buffer: 500000
+  nGibbsSamples: 7
+  small_ref_panel_block_gibbs_iterations: c(3,6,9)
+  small_ref_panel_gibbs_iterations: 20
+  lowram: 'TRUE'
+  Ksubset: 400
+  n_seek_its: 3
+
